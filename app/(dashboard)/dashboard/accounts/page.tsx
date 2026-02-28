@@ -48,19 +48,23 @@ export default async function AccountsPage({ searchParams }: Props) {
         </div>
       )}
 
-      <div className="page-title-row">
-        <div>
+      <div className="page-header-section">
+        <div className="page-header-section__title">
           <h1 className="page-title">Connected Accounts</h1>
           <p className="page-subtitle">
             Manage your bank connections and view balances
           </p>
         </div>
-        <ConnectBankButton />
+        <div className="page-header-section__actions">
+          <ConnectBankButton />
+        </div>
       </div>
 
       <BalanceOverview total={totalBalance} balances={balances} />
 
-      <AccountList connections={connections} />
+      <div className="section-spacing--sm">
+        <AccountList connections={connections} />
+      </div>
     </div>
   )
 }

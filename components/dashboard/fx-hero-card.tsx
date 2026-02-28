@@ -30,91 +30,79 @@ export function FxHeroCard({
     ? Math.round((wiseSavings / totalFxFees) * 100)
     : 0
 
+  // Calculate percentage for circular chart (max 100)
+  const chartPercentage = Math.min((totalFxFees / 100) * 100, 100)
+  const circumference = 2 * Math.PI * 45 // radius = 45
+  const strokeDashoffset = circumference - (chartPercentage / 100) * circumference
+
   return (
     <div className="fx-hero">
+      {/* Top badge */}
+      <div className="fx-hero__badge">
+        <span>FX Fees</span>
+      </div>
+
       <div className="fx-hero__main">
-        <div className="fx-hero__content">
-          <span className="fx-hero__label">Hidden FX Fees This Month</span>
-          <div className="fx-hero__value">{formatCurrency(totalFxFees)}</div>
-          <p className="fx-hero__subtitle">
-            From {transactionCount} foreign currency transaction{transactionCount !== 1 ? "s" : ""}
-          </p>
-
-          {monthlyChange !== undefined && (
-            <div className={`fx-hero__change ${monthlyChange > 0 ? "fx-hero__change--negative" : "fx-hero__change--positive"}`}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                {monthlyChange > 0 ? (
-                  <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
-                ) : (
-                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                )}
-              </svg>
-              <span>
-                {monthlyChange > 0 ? "+" : ""}{monthlyChange}% vs last month
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div className="fx-hero__visual">
-          <svg viewBox="0 0 120 120" className="fx-hero__chart">
+        {/* Circular Chart - Lumin style */}
+        <div className="fx-hero__chart-container">
+          <svg viewBox="0 0 120 120" className="fx-hero__circular-chart">
+            {/* Background circle with segments */}
             <circle
               cx="60"
               cy="60"
-              r="50"
+              r="45"
               fill="none"
-              stroke="rgba(255,255,255,0.2)"
-              strokeWidth="10"
+              stroke="rgba(255,255,255,0.1)"
+              strokeWidth="12"
             />
+            {/* Progress arc - lime color */}
             <circle
               cx="60"
               cy="60"
-              r="50"
+              r="45"
               fill="none"
-              stroke="var(--color-error)"
-              strokeWidth="10"
-              strokeDasharray={`${(transactionCount / 50) * 314} 314`}
+              stroke="#CDFE00"
+              strokeWidth="12"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
               transform="rotate(-90 60 60)"
+              style={{ transition: "stroke-dashoffset 0.5s ease" }}
             />
-            <text x="60" y="55" textAnchor="middle" fill="white" fontSize="20" fontWeight="bold">
-              {transactionCount}
-            </text>
-            <text x="60" y="75" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="10">
-              FX transactions
-            </text>
+            {/* Decorative dots */}
+            <circle cx="60" cy="12" r="3" fill="rgba(255,255,255,0.3)" />
           </svg>
+          <div className="fx-hero__chart-value">
+            <span className="fx-hero__chart-amount">{formatCurrency(totalFxFees)}</span>
+          </div>
         </div>
+
+        {/* Description */}
+        <p className="fx-hero__description">
+          Hidden fees from {transactionCount} foreign currency transactions this month
+        </p>
       </div>
 
-      <div className="fx-hero__stats">
-        <div className="fx-hero__stat">
-          <span className="fx-hero__stat-label">This Week</span>
-          <span className="fx-hero__stat-value">{formatCurrency(weeklyFees)}</span>
+      {/* Bottom row with stats */}
+      <div className="fx-hero__footer">
+        <div className="fx-hero__stat-row">
+          <div className="fx-hero__stat-item">
+            <span className="fx-hero__stat-label">This Week</span>
+            <span className="fx-hero__stat-value">{formatCurrency(weeklyFees)}</span>
+          </div>
+          <div className="fx-hero__stat-item">
+            <span className="fx-hero__stat-label">Top Currency</span>
+            <span className="fx-hero__stat-value">{topCurrency}</span>
+          </div>
         </div>
-        <div className="fx-hero__stat">
-          <span className="fx-hero__stat-label">Top Currency</span>
-          <span className="fx-hero__stat-value">{topCurrency}</span>
-        </div>
-        <div className="fx-hero__stat fx-hero__stat--highlight">
-          <span className="fx-hero__stat-label">Potential Savings</span>
-          <span className="fx-hero__stat-value">{formatCurrency(wiseSavings)}</span>
-          <span className="fx-hero__stat-badge">~{savingsPercentage}% with Wise</span>
-        </div>
-      </div>
 
-      <div className="fx-hero__actions">
-        <Link href="/dashboard/fx-analysis" className="btn btn--primary">
-          View Full Analysis
+        <Link href="/dashboard/fx-analysis" className="fx-hero__link">
+          <span>View Analysis</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
         </Link>
-        <a
-          href="https://wise.com/invite/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn--secondary"
-        >
-          Try Wise
-        </a>
       </div>
     </div>
   )

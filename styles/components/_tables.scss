@@ -118,12 +118,18 @@
   }
 }
 
-// Activity/Transaction row (like Recent Activities in design)
+// Activity/Transaction row - Lumin style
 .activity-row {
   @include flex-between;
-  padding: $spacing-4;
+  padding: $spacing-4 $spacing-5;
   border-bottom: 1px solid var(--border-color-light);
   transition: background-color $transition-fast;
+  gap: $spacing-4;
+
+  @include respond-below('md') {
+    padding: $spacing-3 $spacing-4;
+    flex-wrap: wrap;
+  }
 
   &:last-child {
     border-bottom: none;
@@ -133,9 +139,19 @@
     background-color: var(--bg-card-hover);
   }
 
+  &.is-selected {
+    background-color: rgba(var(--color-primary-rgb), 0.04);
+  }
+
   &__left {
     @include flex-start;
     gap: $spacing-3;
+    flex: 1;
+    min-width: 0;
+
+    @include respond-below('sm') {
+      width: 100%;
+    }
   }
 
   &__checkbox {
@@ -145,6 +161,11 @@
     border-radius: $radius-sm;
     cursor: pointer;
     transition: all $transition-fast;
+    flex-shrink: 0;
+
+    @include respond-below('md') {
+      display: none;
+    }
 
     &:checked {
       background-color: var(--color-primary);
@@ -153,45 +174,84 @@
   }
 
   &__icon {
-    width: 40px;
-    height: 40px;
-    border-radius: $radius-lg;
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-xl;
     @include flex-center;
-    background-color: var(--gray-100);
+    background-color: var(--surface-2);
+    flex-shrink: 0;
+    overflow: hidden;
 
-    img, svg {
+    @include respond-below('sm') {
+      width: 40px;
+      height: 40px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    svg {
       width: 20px;
       height: 20px;
+      color: var(--text-muted);
     }
   }
 
   &__content {
     @include flex-column;
-    gap: $spacing-1;
+    gap: $spacing-0;
+    min-width: 0;
+    flex: 1;
   }
 
   &__title {
     font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-semibold;
     color: var(--text-primary);
+    @include text-truncate;
+
+    @include respond-below('sm') {
+      font-size: $font-size-sm;
+    }
   }
 
   &__id {
     font-size: $font-size-xs;
     color: var(--text-muted);
-    font-family: $font-family-mono;
   }
 
   &__right {
     @include flex-start;
-    gap: $spacing-8;
+    gap: $spacing-4;
     text-align: right;
+    flex-shrink: 0;
+
+    @include respond-below('md') {
+      gap: $spacing-3;
+    }
+
+    @include respond-below('sm') {
+      width: 100%;
+      justify-content: space-between;
+      margin-top: $spacing-2;
+      padding-left: calc(44px + $spacing-3); // Align with content
+    }
   }
 
   &__amount {
-    font-size: $font-size-sm;
-    font-weight: $font-weight-semibold;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
     font-variant-numeric: tabular-nums;
+    min-width: 90px;
+    text-align: right;
+
+    @include respond-below('sm') {
+      min-width: auto;
+      text-align: left;
+    }
 
     &--positive {
       color: var(--color-success);
@@ -230,9 +290,14 @@
   }
 
   &__date {
-    font-size: $font-size-sm;
-    color: var(--text-secondary);
+    font-size: $font-size-xs;
+    color: var(--text-muted);
     white-space: nowrap;
+    min-width: 70px;
+
+    @include respond-below('md') {
+      display: none;
+    }
   }
 
   &__actions {
@@ -241,11 +306,68 @@
     .icon-btn {
       opacity: 0;
       transition: opacity $transition-fast;
+
+      @include respond-below('md') {
+        opacity: 1;
+      }
     }
   }
 
   &:hover &__actions .icon-btn {
     opacity: 1;
+  }
+}
+
+// Transaction detail panel (expanded row)
+.transaction-detail {
+  padding: $spacing-4 $spacing-5;
+  background-color: var(--surface-2);
+  border-bottom: 1px solid var(--border-color-light);
+
+  @include respond-below('sm') {
+    padding: $spacing-3 $spacing-4;
+  }
+
+  &__grid {
+    display: flex;
+    gap: $spacing-6;
+    flex-wrap: wrap;
+
+    @include respond-below('sm') {
+      gap: $spacing-4;
+    }
+  }
+
+  &__item {
+    @include flex-column;
+    gap: $spacing-1;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+
+    &--error {
+      color: var(--color-error);
+    }
+  }
+
+  &__actions {
+    margin-left: auto;
+
+    @include respond-below('sm') {
+      margin-left: 0;
+      width: 100%;
+      margin-top: $spacing-3;
+    }
   }
 }
 

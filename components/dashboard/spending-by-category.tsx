@@ -41,74 +41,76 @@ export function SpendingByCategory({ data }: Props) {
   // Sort by total spent descending
   const sortedData = [...data].sort((a, b) => b.totalSpent - a.totalSpent)
 
-  return (
-    <div className="card">
-      <div className="card__header">
-        <h3 className="card__title">Spending by Category</h3>
-      </div>
-      <div className="card__body">
-        <div className="category-breakdown">
-          {sortedData.slice(0, 6).map((item, index) => {
-            const categoryName = item.category?.name ?? "Uncategorised"
-            const color = categoryColors[categoryName] ?? "#9CA3AF"
-            const percentage = (item.totalSpent / maxSpent) * 100
+  // Calculate total for percentages
+  const total = sortedData.reduce((sum, item) => sum + item.totalSpent, 0)
 
-            return (
-              <div key={item.category?.id ?? index} className="category-row">
-                <div className="category-row__left">
-                  <div
-                    className="category-row__icon"
-                    style={{ backgroundColor: `${color}15` }}
-                  >
-                    <span
-                      className="category-row__dot"
-                      style={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: "50%",
-                        backgroundColor: color,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 12,
-                        color: "#fff"
-                      }}
-                    >
-                      {categoryName[0]}
-                    </span>
-                  </div>
-                  <div className="category-row__info">
-                    <div className="category-row__name">{categoryName}</div>
-                    <div className="category-row__count">
-                      {item.transactionCount} transaction{item.transactionCount !== 1 ? "s" : ""}
-                    </div>
-                  </div>
+  return (
+    <div className="bento-card">
+      <div className="bento-card__header">
+        <h3 className="bento-card__title">Spending categories</h3>
+        <button className="icon-btn icon-btn--sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Horizontal progress bar with all categories */}
+      <div className="category-progress-bar">
+        {sortedData.slice(0, 4).map((item, index) => {
+          const categoryName = item.category?.name ?? "Uncategorised"
+          const color = categoryColors[categoryName] ?? "#9CA3AF"
+          const percentage = total > 0 ? (item.totalSpent / total) * 100 : 0
+
+          return (
+            <div
+              key={item.category?.id ?? index}
+              className="category-progress-bar__segment"
+              style={{
+                width: `${Math.max(percentage, 5)}%`,
+                backgroundColor: color
+              }}
+            />
+          )
+        })}
+      </div>
+
+      {/* Category list */}
+      <div className="category-list">
+        {sortedData.slice(0, 5).map((item, index) => {
+          const categoryName = item.category?.name ?? "Uncategorised"
+          const color = categoryColors[categoryName] ?? "#9CA3AF"
+
+          return (
+            <div key={item.category?.id ?? index} className="category-item">
+              <div className="category-item__left">
+                <div
+                  className="category-item__icon"
+                  style={{ backgroundColor: color }}
+                >
+                  {categoryName[0]}
                 </div>
-                <div className="category-row__bar">
-                  <div className="progress">
-                    <div
-                      className="progress__bar"
-                      style={{
-                        width: `${percentage}%`,
-                        backgroundColor: color
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="category-row__amount">
-                  {formatCurrency(item.totalSpent)}
+                <div className="category-item__info">
+                  <span className="category-item__name">{categoryName}</span>
+                  <span className="category-item__count">
+                    {item.transactionCount} transaction{item.transactionCount !== 1 ? "s" : ""}
+                  </span>
                 </div>
               </div>
-            )
-          })}
-        </div>
-
-        {sortedData.length === 0 && (
-          <div className="table__empty">
-            <p>No spending data available</p>
-          </div>
-        )}
+              <span className="category-item__amount">
+                {formatCurrency(item.totalSpent)}
+              </span>
+            </div>
+          )
+        })}
       </div>
+
+      {sortedData.length === 0 && (
+        <div className="empty-state">
+          <p className="empty-state__text">No spending data available</p>
+        </div>
+      )}
     </div>
   )
 }

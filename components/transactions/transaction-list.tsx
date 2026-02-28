@@ -181,24 +181,15 @@ export function TransactionList({ transactions, totalFxFees, categories }: Props
               </div>
 
               {isSelected && (
-                <div
-                  style={{
-                    padding: "1rem 1.5rem",
-                    backgroundColor: "#f9fafb",
-                    borderBottom: "1px solid #e5e7eb"
-                  }}
-                >
-                  <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-                    <div>
-                      <div style={{ fontSize: "0.75rem", color: "#6b7280", marginBottom: 4 }}>
-                        Category
-                      </div>
-                      <form action={updateCategoryAction} style={{ display: "flex", gap: "0.5rem" }}>
+                <div className="transaction-detail">
+                  <div className="transaction-detail__grid">
+                    <div className="transaction-detail__item">
+                      <span className="transaction-detail__label">Category</span>
+                      <form action={updateCategoryAction}>
                         <input type="hidden" name="transactionId" value={tx.id} />
                         <select
                           name="categoryId"
                           className="select"
-                          style={{ minWidth: 150 }}
                           defaultValue={tx.categoryId ?? ""}
                           onChange={(e) => e.target.form?.requestSubmit()}
                         >
@@ -214,36 +205,30 @@ export function TransactionList({ transactions, totalFxFees, categories }: Props
 
                     {tx.currency !== "GBP" && (
                       <>
-                        <div>
-                          <div style={{ fontSize: "0.75rem", color: "#6b7280", marginBottom: 4 }}>
-                            Mid-Market Rate
-                          </div>
-                          <div style={{ fontWeight: 500 }}>
+                        <div className="transaction-detail__item">
+                          <span className="transaction-detail__label">Mid-Market Rate</span>
+                          <span className="transaction-detail__value">
                             {tx.midMarketRate?.toFixed(4) ?? "—"}
-                          </div>
+                          </span>
                         </div>
-                        <div>
-                          <div style={{ fontSize: "0.75rem", color: "#6b7280", marginBottom: 4 }}>
-                            Bank Rate
-                          </div>
-                          <div style={{ fontWeight: 500 }}>
+                        <div className="transaction-detail__item">
+                          <span className="transaction-detail__label">Bank Rate</span>
+                          <span className="transaction-detail__value">
                             {tx.bankRate?.toFixed(4) ?? "—"}
-                          </div>
+                          </span>
                         </div>
-                        <div>
-                          <div style={{ fontSize: "0.75rem", color: "#6b7280", marginBottom: 4 }}>
-                            Est. FX Fee
-                          </div>
-                          <div style={{ fontWeight: 500, color: "#EF4444" }}>
+                        <div className="transaction-detail__item">
+                          <span className="transaction-detail__label">Est. FX Fee</span>
+                          <span className="transaction-detail__value transaction-detail__value--error">
                             {tx.estimatedFxFee
                               ? formatCurrency(tx.estimatedFxFee)
                               : "—"}
-                          </div>
+                          </span>
                         </div>
                       </>
                     )}
 
-                    <div style={{ marginLeft: "auto" }}>
+                    <div className="transaction-detail__actions">
                       <form action={markAsTransferAction}>
                         <input type="hidden" name="transactionId" value={tx.id} />
                         <button
@@ -251,7 +236,7 @@ export function TransactionList({ transactions, totalFxFees, categories }: Props
                           className="btn btn--ghost btn--sm"
                           disabled={tx.isInternalTransfer}
                         >
-                          {tx.isInternalTransfer ? "Marked as transfer" : "Mark as internal transfer"}
+                          {tx.isInternalTransfer ? "Marked as transfer" : "Mark as transfer"}
                         </button>
                       </form>
                     </div>

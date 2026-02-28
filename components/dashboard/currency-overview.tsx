@@ -80,75 +80,57 @@ export function CurrencyOverview({ currencies, baseCurrency }: Props) {
   }
 
   return (
-    <div className="card">
-      <div className="card__header">
-        <div>
-          <h3 className="card__title">Multi-Currency Overview</h3>
-          <p className="card__subtitle">Your spending across currencies this month</p>
-        </div>
+    <div className="bento-card">
+      <div className="bento-card__header">
+        <h3 className="bento-card__title">Your currencies</h3>
       </div>
 
-      <div className="card__body">
-        <div className="currency-grid">
-          {sortedCurrencies.map((curr) => {
-            const info = currencyInfo[curr.currency] || { flag: "💱", name: curr.currency }
-            const spendingPercent = totalSpending > 0
-              ? (Math.abs(curr.monthlySpending) / totalSpending) * 100
-              : 0
+      {/* Currency Bubbles - Lumin style */}
+      <div className="currency-bubbles">
+        {sortedCurrencies.slice(0, 3).map((curr, index) => {
+          const info = currencyInfo[curr.currency] || { flag: "💱", name: curr.currency }
+          const spendingPercent = totalSpending > 0
+            ? Math.round((Math.abs(curr.monthlySpending) / totalSpending) * 100)
+            : 0
 
-            return (
-              <div key={curr.currency} className="currency-card">
-                <div className="currency-card__header">
-                  <div className="currency-card__flag">{info.flag}</div>
-                  <div className="currency-card__info">
-                    <span className="currency-card__code">{curr.currency}</span>
-                    <span className="currency-card__name">{info.name}</span>
-                  </div>
-                </div>
+          // Larger bubble for first currency
+          const isMain = index === 0
 
-                <div className="currency-card__spending">
-                  <span className="currency-card__amount">
-                    {formatCurrency(Math.abs(curr.monthlySpending), curr.currency)}
-                  </span>
-                  <span className="currency-card__label">spent this month</span>
-                </div>
-
-                <div className="currency-card__bar">
-                  <div
-                    className="currency-card__bar-fill"
-                    style={{ width: `${Math.min(spendingPercent, 100)}%` }}
-                  />
-                </div>
-
-                {curr.fxFees > 0 && (
-                  <div className="currency-card__fees">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="8" x2="12" y2="12" />
-                      <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
-                    <span>{formatCurrency(curr.fxFees, baseCurrency)} in fees</span>
-                  </div>
-                )}
+          return (
+            <div
+              key={curr.currency}
+              className={`currency-bubble ${isMain ? "currency-bubble--main" : ""}`}
+              style={{
+                backgroundColor: isMain ? "#CDFE00" : index === 1 ? "#1A1A1F" : "#F5F5F5",
+                color: isMain || index === 1 ? (isMain ? "#0D0D0D" : "#FFFFFF") : "#0D0D0D",
+              }}
+            >
+              <span className="currency-bubble__symbol">$</span>
+              <div className="currency-bubble__content">
+                <span className="currency-bubble__code">{curr.currency}</span>
+                <span className="currency-bubble__percent">{spendingPercent}%</span>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          )
+        })}
+      </div>
 
-        <div className="currency-summary">
-          <div className="currency-summary__item">
-            <span className="currency-summary__label">Currencies Used</span>
-            <span className="currency-summary__value">{currencies.length}</span>
-          </div>
-          <div className="currency-summary__item">
-            <span className="currency-summary__label">Total FX Spending</span>
-            <span className="currency-summary__value">{formatCurrency(totalSpending, baseCurrency)}</span>
-          </div>
-          <div className="currency-summary__item currency-summary__item--highlight">
-            <span className="currency-summary__label">Total FX Fees</span>
-            <span className="currency-summary__value">{formatCurrency(totalFees, baseCurrency)}</span>
-          </div>
-        </div>
+      {/* Currency List */}
+      <div className="currency-list">
+        {sortedCurrencies.slice(0, 4).map((curr) => {
+          const info = currencyInfo[curr.currency] || { flag: "💱", name: curr.currency }
+          const spendingPercent = totalSpending > 0
+            ? Math.round((Math.abs(curr.monthlySpending) / totalSpending) * 100)
+            : 0
+
+          return (
+            <div key={curr.currency} className="currency-list__item">
+              <span className="currency-list__flag">{info.flag}</span>
+              <span className="currency-list__code">{curr.currency}</span>
+              <span className="currency-list__percent">{spendingPercent}%</span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

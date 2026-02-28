@@ -32,21 +32,25 @@ export default async function TransactionsPage({ searchParams }: Props) {
   ])
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          All your transactions across connected accounts
-        </p>
+    <div className="page-content">
+      <div className="page-header-section">
+        <div className="page-header-section__title">
+          <h1 className="page-title">Transactions</h1>
+          <p className="page-subtitle">
+            All your transactions across connected accounts
+          </p>
+        </div>
       </div>
 
       <TransactionFilters categories={categories} accounts={accounts} />
 
-      <TransactionList
-        transactions={transactions}
-        totalFxFees={fxTotals.totalFxFees}
-        categories={categories}
-      />
+      <div className="transaction-list-container">
+        <TransactionList
+          transactions={transactions}
+          totalFxFees={fxTotals.totalFxFees}
+          categories={categories}
+        />
+      </div>
     </div>
   )
 }

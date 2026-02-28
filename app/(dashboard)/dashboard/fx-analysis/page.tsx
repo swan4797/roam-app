@@ -10,23 +10,26 @@ export default async function FxAnalysisPage() {
   ])
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">FX Fee Analysis</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          See how much you&apos;re paying in foreign exchange fees
-        </p>
+    <div className="page-content">
+      <div className="page-header-section">
+        <div className="page-header-section__title">
+          <h1 className="page-title">FX Fee Analysis</h1>
+          <p className="page-subtitle">
+            See how much you&apos;re paying in foreign exchange fees
+          </p>
+        </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-lg border bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Estimated FX Fees This Month
-          </h2>
-          <p className="mt-2 text-3xl font-bold text-red-600">
+      <div className="bento-grid bento-grid--2">
+        <div className="bento-card">
+          <div className="bento-card__header">
+            <h3 className="bento-card__title">Estimated FX Fees</h3>
+            <span className="badge badge--muted">This Month</span>
+          </div>
+          <p className="stat-value stat-value--error">
             £{fxTotals.totalFxFees.toFixed(2)}
           </p>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="text-muted">
             Approximately what your banks charged above mid-market rates
           </p>
         </div>
@@ -34,9 +37,13 @@ export default async function FxAnalysisPage() {
         <WiseComparison totalSavings={fxTotals.totalWiseSavings} />
       </div>
 
-      <FxAnalysisChart transactions={fxTransactions} />
+      <div className="section-spacing">
+        <FxAnalysisChart transactions={fxTransactions} />
+      </div>
 
-      <FxTransactionTable transactions={fxTransactions} />
+      <div className="section-spacing">
+        <FxTransactionTable transactions={fxTransactions} />
+      </div>
     </div>
   )
 }

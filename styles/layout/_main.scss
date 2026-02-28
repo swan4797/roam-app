@@ -10,19 +10,30 @@
 // =============================================================================
 
 .app-layout {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   background-color: var(--bg-page);
+
+  // Sidebar layout (legacy)
+  &--sidebar {
+    display: flex;
+
+    .main-content {
+      margin-left: $sidebar-width;
+
+      @include respond-below('lg') {
+        margin-left: 0;
+      }
+    }
+  }
 }
 
 .main-content {
   flex: 1;
-  margin-left: $sidebar-width;
   min-height: 100vh;
+  padding-top: 72px; // Height of top nav
 
-  @include respond-below('lg') {
-    margin-left: 0;
+  @include respond-below('md') {
+    padding-top: 64px;
   }
 }
 
@@ -205,19 +216,138 @@
   }
 }
 
-.page-title {
+// Page header section - like in Lumin design
+.page-header-section {
+  @include flex-between;
   margin-bottom: $spacing-6;
+  gap: $spacing-4;
 
-  h1 {
-    font-size: $font-size-2xl;
-    font-weight: $font-weight-bold;
-    color: var(--text-primary);
-    margin-bottom: $spacing-1;
+  @include respond-below('sm') {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-4;
   }
 
-  p {
-    font-size: $font-size-sm;
+  &__left {
+    @include flex-start;
+    gap: $spacing-4;
+  }
+
+  &__back {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-full;
+    background-color: var(--surface-2);
+    @include flex-center;
     color: var(--text-secondary);
+    text-decoration: none;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: var(--surface-3);
+      color: var(--text-primary);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__right {
+    @include flex-start;
+    gap: $spacing-3;
+  }
+}
+
+// Date range picker
+.date-range-picker {
+  @include flex-start;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  background-color: var(--surface-2);
+  border-radius: $radius-full;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: var(--surface-3);
+    color: var(--text-primary);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Page title row - flex layout for title + actions (legacy)
+.page-title-row {
+  @include flex-between;
+  margin-bottom: $spacing-6;
+  gap: $spacing-4;
+
+  @include respond-below('sm') {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-4;
+  }
+}
+
+// Enhanced page title styling
+.page-title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  line-height: $line-height-tight;
+  margin: 0;
+
+  @include respond-below('md') {
+    font-size: $font-size-2xl;
+  }
+
+  @include respond-below('sm') {
+    font-size: $font-size-xl;
+  }
+}
+
+// Page subtitle with enhanced styling
+.page-subtitle {
+  font-size: $font-size-base;
+  color: var(--text-secondary);
+  margin-top: $spacing-2;
+  line-height: $line-height-normal;
+  max-width: 500px;
+
+  @include respond-below('sm') {
+    font-size: $font-size-sm;
+  }
+}
+
+// Breadcrumb navigation
+.page-breadcrumb {
+  @include flex-start;
+  gap: $spacing-2;
+  font-size: $font-size-sm;
+  color: var(--text-muted);
+  margin-bottom: $spacing-4;
+
+  &__link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  &__separator {
+    color: var(--text-muted);
   }
 }
 
@@ -489,5 +619,214 @@
       width: 20px;
       height: 20px;
     }
+  }
+}
+
+// =============================================================================
+// AUTH PAGES (Login/Signup)
+// =============================================================================
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-page) 0%, var(--gray-100) 100%);
+  padding: $spacing-4;
+
+  @include respond-below('sm') {
+    padding: $spacing-4 $spacing-3;
+    align-items: flex-start;
+    padding-top: $spacing-12;
+  }
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+
+  @include respond-below('sm') {
+    max-width: 100%;
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: $spacing-8;
+
+  @include respond-below('sm') {
+    margin-bottom: $spacing-6;
+  }
+}
+
+.auth-logo {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  margin-bottom: $spacing-2;
+  letter-spacing: -0.025em;
+
+  @include respond-below('sm') {
+    font-size: $font-size-2xl;
+  }
+}
+
+.auth-tagline {
+  font-size: $font-size-base;
+  color: var(--text-secondary);
+  line-height: $line-height-normal;
+
+  @include respond-below('sm') {
+    font-size: $font-size-sm;
+  }
+}
+
+.auth-card {
+  @include card;
+  padding: $spacing-8;
+
+  @include respond-below('sm') {
+    padding: $spacing-6 $spacing-5;
+  }
+}
+
+.auth-card__header {
+  text-align: center;
+  margin-bottom: $spacing-6;
+
+  h2 {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    margin-bottom: $spacing-2;
+
+    @include respond-below('sm') {
+      font-size: $font-size-lg;
+    }
+  }
+
+  p {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+  }
+}
+
+.auth-footer {
+  margin-top: $spacing-6;
+  text-align: center;
+  font-size: $font-size-sm;
+  color: var(--text-secondary);
+
+  a {
+    color: var(--color-primary);
+    font-weight: $font-weight-medium;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+}
+
+.auth-error {
+  padding: $spacing-3 $spacing-4;
+  margin-bottom: $spacing-4;
+  background-color: var(--color-error-light);
+  border: 1px solid rgba($color-error, 0.2);
+  border-radius: $radius-lg;
+  font-size: $font-size-sm;
+  color: var(--color-error);
+}
+
+// =============================================================================
+// RESPONSIVE GRID UTILITIES
+// =============================================================================
+
+.responsive-grid {
+  display: grid;
+  gap: $spacing-6;
+  grid-template-columns: 1fr;
+  margin-top: $spacing-8;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to('lg') {
+    gap: $spacing-8;
+  }
+
+  &--3-cols {
+    @include respond-to('lg') {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &--2-1 {
+    @include respond-to('lg') {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  &--no-margin {
+    margin-top: 0;
+  }
+}
+
+// Section spacing utilities
+.section-spacing {
+  margin-top: $spacing-8;
+
+  &--sm {
+    margin-top: $spacing-4;
+  }
+
+  &--md {
+    margin-top: $spacing-6;
+  }
+}
+
+// Filter bar responsive layout
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+  align-items: flex-end;
+
+  @include respond-below('md') {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  &__group {
+    min-width: 0;
+    flex: 1;
+
+    @include respond-to('md') {
+      flex: 0 0 auto;
+      min-width: 180px;
+    }
+  }
+
+  &__dates {
+    display: flex;
+    gap: $spacing-3;
+
+    @include respond-below('sm') {
+      flex-direction: column;
+    }
+  }
+}
+
+// =============================================================================
+// TRANSACTION LIST CONTAINER
+// =============================================================================
+
+.transaction-list-container {
+  margin-top: $spacing-5;
+
+  @include respond-below('md') {
+    margin-top: $spacing-4;
   }
 }

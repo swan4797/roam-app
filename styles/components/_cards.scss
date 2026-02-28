@@ -528,6 +528,24 @@
 .bento-grid {
   @include bento-grid;
 
+  // Simple 2-column layout
+  &--2 {
+    @include respond-to('md') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  // Simple 3-column layout
+  &--3 {
+    @include respond-to('md') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to('lg') {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
   // Span utilities
   &__item {
     @include respond-to('lg') {
