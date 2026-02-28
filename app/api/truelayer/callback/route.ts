@@ -47,10 +47,14 @@ export async function GET(request: NextRequest) {
 
   try {
     // Exchange code for tokens
+    console.log("Exchanging code for tokens...")
     const tokens = await exchangeCodeForTokens(code)
+    console.log("Tokens received, expires_in:", tokens.expires_in)
 
     // Get connection info (provider details)
+    console.log("Fetching connection info...")
     const connectionInfo = await getConnectionInfo(tokens.access_token)
+    console.log("Connection info received:", JSON.stringify(connectionInfo, null, 2))
 
     // Calculate token expiry
     const accessTokenExpiresAt = new Date()
@@ -64,11 +68,15 @@ export async function GET(request: NextRequest) {
       consentExpiresAt = new Date(connectionInfo.consent_expires_at)
     }
 
+    // Extract provider info with fallbacks
+    const providerId = connectionInfo.provider?.provider_id || connectionInfo.credentials_id || "unknown"
+    const providerName = connectionInfo.provider?.display_name || "Connected Bank"
+
     // Check for existing connection with same provider
     const existingConnection = await prisma.bankConnection.findFirst({
       where: {
         userId,
-        institutionId: connectionInfo.provider.provider_id,
+        institutionId: providerId,
       },
     })
 
@@ -93,8 +101,8 @@ export async function GET(request: NextRequest) {
       const bankConnection = await prisma.bankConnection.create({
         data: {
           userId,
-          institutionId: connectionInfo.provider.provider_id,
-          institutionName: connectionInfo.provider.display_name,
+          institutionId: providerId,
+          institutionName: providerName,
           accessTokenEncrypted: encrypt(tokens.access_token),
           refreshTokenEncrypted: encrypt(tokens.refresh_token),
           accessTokenExpiresAt,
@@ -162,9 +170,11 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.redirect(new URL("/dashboard/accounts?success=connected", baseUrl))
   } catch (error) {
-    console.error("TrueLayer callback error:", error)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error("TrueLayer callback error:", errorMessage)
+    console.error("Full error:", error)
     return NextResponse.redirect(
-      new URL("/dashboard/accounts?error=connection_failed", baseUrl)
+      new URL(`/dashboard/accounts?error=connection_failed&detail=${encodeURIComponent(errorMessage)}`, baseUrl)
     )
   }
 }

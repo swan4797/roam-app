@@ -5,7 +5,7 @@ import { BalanceOverview } from "@/components/dashboard/balance-overview"
 import { ConnectBankButton } from "@/components/dashboard/connect-bank-button"
 
 interface Props {
-  searchParams: Promise<{ error?: string; success?: string }>
+  searchParams: Promise<{ error?: string; success?: string; detail?: string }>
 }
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -18,7 +18,7 @@ const ERROR_MESSAGES: Record<string, string> = {
 }
 
 export default async function AccountsPage({ searchParams }: Props) {
-  const { error, success } = await searchParams
+  const { error, success, detail } = await searchParams
   const [connections, balances, totalBalance] = await Promise.all([
     getBankConnections(),
     getAccountBalances(),
@@ -34,7 +34,7 @@ export default async function AccountsPage({ searchParams }: Props) {
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
-          <span>{ERROR_MESSAGES[error] || `Connection error: ${error}`}</span>
+          <span>{ERROR_MESSAGES[error] || `Connection error: ${error}`}{detail && ` - ${detail}`}</span>
         </div>
       )}
 

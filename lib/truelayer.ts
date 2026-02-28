@@ -34,7 +34,10 @@ export function generateAuthUrl(state: string): string {
     "info",
     "accounts",
     "balance",
+    "cards",
     "transactions",
+    "direct_debits",
+    "standing_orders",
     "offline_access",
   ]
 
@@ -44,12 +47,8 @@ export function generateAuthUrl(state: string): string {
     redirect_uri: redirectUri,
     scope: scopes.join(" "),
     state,
+    providers: "uk-cs-mock uk-ob-all uk-oauth-all",
   })
-
-  // In sandbox mode, add mock provider for testing
-  if (getEnv() === "sandbox") {
-    params.set("providers", "uk-ob-all uk-oauth-all")
-  }
 
   return `${getAuthUrl()}/?${params.toString()}`
 }
