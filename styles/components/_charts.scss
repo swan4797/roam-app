@@ -1,16 +1,25 @@
 // =============================================================================
-// CHARTS
+// CHARTS - Lumin Design System
+// Clean chart containers with proper spacing and theming
 // =============================================================================
 
 @use '../abstracts' as *;
 
-// Chart container
+// =============================================================================
+// CHART CONTAINER
+// =============================================================================
+
 .chart {
   @include card;
 
   &__header {
     @include flex-between;
     margin-bottom: $spacing-6;
+  }
+
+  &__title-group {
+    @include flex-column;
+    gap: $spacing-1;
   }
 
   &__title {
@@ -22,7 +31,6 @@
   &__subtitle {
     font-size: $font-size-sm;
     color: var(--text-secondary);
-    margin-top: $spacing-1;
   }
 
   &__legend {
@@ -43,27 +51,63 @@
       border-radius: $radius-sm;
     }
 
-    &--profit::before {
+    &--primary::before {
       background-color: var(--color-primary);
     }
 
-    &--loss::before {
+    &--secondary::before {
+      background-color: var(--chart-line);
+    }
+
+    &--muted::before {
       background-color: var(--gray-300);
     }
+
+    &--dashed::before {
+      background: repeating-linear-gradient(
+        90deg,
+        var(--gray-400) 0,
+        var(--gray-400) 4px,
+        transparent 4px,
+        transparent 8px
+      );
+    }
+  }
+
+  &__actions {
+    @include flex-start;
+    gap: $spacing-2;
   }
 
   &__body {
     position: relative;
-    min-height: 200px;
+    min-height: 250px;
   }
 }
 
-// Bar chart
+// =============================================================================
+// PERIOD SELECTOR (for chart timeframes)
+// =============================================================================
+
+.period-selector {
+  @include pill-nav;
+
+  &__item {
+    @include pill-nav-item;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+  }
+}
+
+// =============================================================================
+// BAR CHART
+// =============================================================================
+
 .bar-chart {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: $spacing-2;
+  gap: $spacing-3;
   height: 200px;
   padding: $spacing-4 0;
 
@@ -83,8 +127,8 @@
   }
 
   &__bar {
-    width: 24px;
-    border-radius: $radius-sm $radius-sm 0 0;
+    width: 28px;
+    border-radius: $radius-md $radius-md 0 0;
     transition: opacity $transition-fast;
 
     &--primary {
@@ -96,7 +140,7 @@
     }
 
     &:hover {
-      opacity: 0.8;
+      opacity: 0.85;
     }
   }
 
@@ -107,11 +151,14 @@
   }
 }
 
-// Progress bar
+// =============================================================================
+// PROGRESS BAR
+// =============================================================================
+
 .progress {
   width: 100%;
   height: 8px;
-  background-color: var(--gray-100);
+  background-color: var(--surface-2);
   border-radius: $radius-full;
   overflow: hidden;
 
@@ -135,6 +182,10 @@
     &--error {
       background-color: var(--color-error);
     }
+
+    &--gradient {
+      background: var(--gradient-primary);
+    }
   }
 
   &--lg {
@@ -144,9 +195,20 @@
   &--sm {
     height: 4px;
   }
+
+  &--rounded {
+    border-radius: $radius-lg;
+
+    .progress__bar {
+      border-radius: $radius-lg;
+    }
+  }
 }
 
-// Progress with label (like Monthly Spending Limit)
+// =============================================================================
+// PROGRESS CARD
+// =============================================================================
+
 .progress-card {
   @include card;
 
@@ -163,7 +225,7 @@
 
   &__values {
     @include flex-between;
-    margin-bottom: $spacing-2;
+    margin-bottom: $spacing-3;
     font-size: $font-size-sm;
   }
 
@@ -175,9 +237,19 @@
   &__max {
     color: var(--text-secondary);
   }
+
+  &__percentage {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+    margin-top: $spacing-2;
+    text-align: right;
+  }
 }
 
-// Spending category breakdown
+// =============================================================================
+// CATEGORY BREAKDOWN
+// =============================================================================
+
 .category-breakdown {
   @include flex-column;
   gap: $spacing-4;
@@ -195,15 +267,15 @@
   }
 
   &__icon {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: $radius-lg;
     @include flex-center;
     flex-shrink: 0;
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
     }
   }
 
@@ -226,7 +298,7 @@
 
   &__bar {
     flex: 1;
-    max-width: 120px;
+    max-width: 140px;
   }
 
   &__amount {
@@ -239,26 +311,36 @@
   }
 }
 
-// Mini sparkline
+// =============================================================================
+// SPARKLINE
+// =============================================================================
+
 .sparkline {
   display: flex;
   align-items: flex-end;
-  gap: 2px;
-  height: 32px;
+  gap: 3px;
+  height: 36px;
 
   &__bar {
     width: 4px;
     background-color: var(--color-primary);
-    border-radius: 2px;
+    border-radius: $radius-sm;
     transition: height $transition-fast;
+  }
+
+  &--muted .sparkline__bar {
+    background-color: var(--gray-300);
   }
 }
 
-// Donut chart placeholder
+// =============================================================================
+// DONUT CHART
+// =============================================================================
+
 .donut-chart {
   position: relative;
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
   margin: 0 auto;
 
   &__center {
@@ -267,16 +349,158 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+    pointer-events: none;
   }
 
   &__value {
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
     color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: $spacing-1;
   }
 
   &__label {
     font-size: $font-size-xs;
     color: var(--text-muted);
+  }
+}
+
+// =============================================================================
+// ALLOCATION LEGEND
+// =============================================================================
+
+.allocation-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: $spacing-3;
+  margin-top: $spacing-5;
+  padding-top: $spacing-5;
+  border-top: 1px solid var(--border-color-light);
+
+  &__item {
+    @include flex-start;
+    gap: $spacing-3;
+  }
+
+  &__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    @include flex-between;
+    gap: $spacing-2;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    @include text-truncate;
+  }
+
+  &__value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// =============================================================================
+// CHART TOOLTIP (Recharts custom tooltip)
+// =============================================================================
+
+.chart-tooltip {
+  @include card($padding: $spacing-3);
+  font-size: $font-size-sm;
+  min-width: 140px;
+  border: 1px solid var(--border-color);
+
+  &__label {
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    margin-bottom: $spacing-2;
+  }
+
+  &__row {
+    @include flex-between;
+    gap: $spacing-3;
+
+    &:not(:last-child) {
+      margin-bottom: $spacing-1;
+    }
+  }
+
+  &__key {
+    @include flex-start;
+    gap: $spacing-2;
+    color: var(--text-secondary);
+
+    &::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: $radius-sm;
+      background-color: currentColor;
+    }
+  }
+
+  &__value {
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// =============================================================================
+// MINI STAT (inline stat display)
+// =============================================================================
+
+.mini-stat {
+  @include flex-start;
+  gap: $spacing-3;
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-lg;
+    @include flex-center;
+    background-color: var(--surface-2);
+
+    svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-secondary);
+    }
+
+    &--accent {
+      background-color: rgba($color-primary, 0.1);
+
+      svg {
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__content {
+    @include flex-column;
+    gap: $spacing-0;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+  }
+
+  &__value {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
   }
 }

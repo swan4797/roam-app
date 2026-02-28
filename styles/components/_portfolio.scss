@@ -1,94 +1,107 @@
 // =============================================================================
-// PORTFOLIO COMPONENTS
+// PORTFOLIO COMPONENTS - Lumin Design System
+// Property cards, investment displays, allocation charts
 // =============================================================================
 
 @use '../abstracts' as *;
 
-// Page title row with selector
+// =============================================================================
+// PAGE TITLE ROW
+// =============================================================================
+
 .page-title-row {
   @include flex-between;
   flex-wrap: wrap;
   gap: $spacing-4;
+  margin-bottom: $spacing-6;
 }
 
 .page-title {
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
-  color: $text-primary;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+
+  @include respond-to('lg') {
+    font-size: $font-size-3xl;
+  }
 }
 
 .page-subtitle {
   margin-top: $spacing-1;
   font-size: $font-size-sm;
-  color: $text-secondary;
+  color: var(--text-secondary);
 }
 
-// Property card
+// =============================================================================
+// PROPERTY CARD
+// =============================================================================
+
 .property-card {
   @include card;
   overflow: hidden;
 
   &--clickable {
     cursor: pointer;
-    transition: all $transition-base;
-
-    &:hover {
-      box-shadow: $shadow-lg;
-      transform: translateY(-2px);
-    }
+    @include card-hover;
   }
 
   &__image {
     position: relative;
-    height: 160px;
-    margin: (-$spacing-6) (-$spacing-6) $spacing-4;
-    background-color: $color-gray-100;
+    height: 180px;
+    margin: (-$spacing-6) (-$spacing-6) $spacing-5;
+    background-color: var(--surface-2);
     overflow: hidden;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform $transition-slow;
+    }
+
+    .property-card:hover & img {
+      transform: scale(1.02);
     }
   }
 
   &__placeholder {
     @include flex-center;
     height: 100%;
-    background-color: $color-gray-100;
+    background-color: var(--surface-2);
 
     svg {
       width: 48px;
       height: 48px;
-      color: $color-gray-400;
+      color: var(--text-muted);
     }
   }
 
   &__badge {
     position: absolute;
-    top: $spacing-3;
-    left: $spacing-3;
+    top: $spacing-4;
+    left: $spacing-4;
   }
 
   &__name {
     font-size: $font-size-lg;
     font-weight: $font-weight-semibold;
-    color: $text-primary;
+    color: var(--text-primary);
     margin-bottom: $spacing-1;
   }
 
   &__location {
     font-size: $font-size-sm;
-    color: $text-secondary;
-    margin-bottom: $spacing-3;
+    color: var(--text-secondary);
+    margin-bottom: $spacing-4;
   }
 
   &__meta {
     @include flex-start;
-    gap: $spacing-3;
+    gap: $spacing-4;
     font-size: $font-size-xs;
-    color: $text-muted;
-    margin-bottom: $spacing-4;
+    color: var(--text-muted);
+    margin-bottom: $spacing-5;
   }
 
   &__type {
@@ -96,16 +109,16 @@
   }
 
   &__return {
-    color: $color-primary;
-    font-weight: $font-weight-medium;
+    color: var(--color-primary);
+    font-weight: $font-weight-semibold;
   }
 
   &__values {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: $spacing-4;
-    padding-top: $spacing-4;
-    border-top: 1px solid $color-gray-100;
+    gap: $spacing-5;
+    padding-top: $spacing-5;
+    border-top: 1px solid var(--border-color-light);
   }
 
   &__value {
@@ -115,35 +128,52 @@
 
   &__value-label {
     font-size: $font-size-xs;
-    color: $text-muted;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   &__value-amount {
-    font-size: $font-size-base;
-    font-weight: $font-weight-semibold;
-    color: $text-primary;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
   }
 }
 
-// Property grid
+// =============================================================================
+// PROPERTY GRID
+// =============================================================================
+
 .property-grid {
   display: grid;
   gap: $spacing-6;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: 1fr;
+
+  @include respond-to('sm') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to('xl') {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-// Investment cell in table
+// =============================================================================
+// INVESTMENT CELL (table display)
+// =============================================================================
+
 .investment-cell {
   @include flex-start;
   gap: $spacing-3;
 
   &__icon {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: $radius-lg;
     @include flex-center;
     flex-shrink: 0;
+    background-color: var(--surface-2);
   }
 
   &__info {
@@ -154,110 +184,104 @@
 
   &__name {
     font-weight: $font-weight-medium;
-    color: $text-primary;
+    color: var(--text-primary);
     @include text-truncate;
   }
 
   &__location {
     font-size: $font-size-xs;
-    color: $text-muted;
+    color: var(--text-muted);
     @include text-truncate;
   }
 }
 
-// Return badge
+// =============================================================================
+// RETURN BADGE
+// =============================================================================
+
 .return-badge {
   display: inline-flex;
   align-items: center;
-  padding: $spacing-1 $spacing-2;
-  border-radius: $radius-sm;
+  gap: $spacing-1;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $radius-full;
   font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-semibold;
   font-variant-numeric: tabular-nums;
 
   &--positive {
-    background-color: $color-success-light;
-    color: $color-success;
+    background-color: var(--color-success-light);
+    color: var(--color-success);
   }
 
   &--negative {
-    background-color: $color-error-light;
-    color: $color-error;
+    background-color: var(--color-error-light);
+    color: var(--color-error);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
   }
 }
 
-// Property type icon
+// =============================================================================
+// PROPERTY TYPE ICON
+// =============================================================================
+
 .property-type-icon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: $radius-lg;
   @include flex-center;
   background-color: rgba($color-primary, 0.1);
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     color: $color-primary;
   }
-}
 
-// Allocation legend
-.allocation-legend {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: $spacing-3;
-  margin-top: $spacing-4;
-  padding-top: $spacing-4;
-  border-top: 1px solid $color-gray-100;
+  &--lg {
+    width: 56px;
+    height: 56px;
 
-  &__item {
-    @include flex-start;
-    gap: $spacing-2;
-  }
-
-  &__dot {
-    width: 12px;
-    height: 12px;
-    border-radius: $radius-sm;
-    flex-shrink: 0;
-  }
-
-  &__name {
-    font-size: $font-size-sm;
-    color: $text-secondary;
-    flex: 1;
-    @include text-truncate;
-  }
-
-  &__value {
-    font-size: $font-size-sm;
-    font-weight: $font-weight-semibold;
-    color: $text-primary;
-    font-variant-numeric: tabular-nums;
+    svg {
+      width: 28px;
+      height: 28px;
+    }
   }
 }
 
-// Chart tooltip
+// =============================================================================
+// CHART TOOLTIP
+// =============================================================================
+
 .chart-tooltip {
   @include card($padding: $spacing-3);
   font-size: $font-size-sm;
-  min-width: 120px;
+  min-width: 140px;
+  border: 1px solid var(--border-color);
 
   &__label {
     font-weight: $font-weight-semibold;
-    margin-bottom: $spacing-1;
+    margin-bottom: $spacing-2;
   }
 }
 
-// Chart legend
+// =============================================================================
+// CHART LEGEND
+// =============================================================================
+
 .chart-legend {
   @include flex-start;
-  gap: $spacing-4;
-  font-size: $font-size-xs;
+  gap: $spacing-5;
+  font-size: $font-size-sm;
 
   &__item {
     @include flex-start;
     gap: $spacing-2;
+    color: var(--text-secondary);
 
     &::before {
       content: '';
@@ -267,17 +291,29 @@
     }
 
     &--primary::before {
-      background-color: $color-primary;
+      background-color: var(--color-primary);
     }
 
     &--muted::before {
-      background-color: $color-gray-400;
-      border-style: dashed;
+      background-color: var(--gray-400);
+    }
+
+    &--dashed::before {
+      background: repeating-linear-gradient(
+        90deg,
+        var(--gray-400) 0,
+        var(--gray-400) 3px,
+        transparent 3px,
+        transparent 6px
+      );
     }
   }
 }
 
-// Donut chart wrapper
+// =============================================================================
+// DONUT CHART WRAPPER
+// =============================================================================
+
 .donut-chart-wrapper {
   position: relative;
 }
@@ -292,22 +328,79 @@
 }
 
 .donut-chart__value {
-  font-size: $font-size-lg;
+  font-size: $font-size-xl;
   font-weight: $font-weight-bold;
-  color: $text-primary;
+  color: var(--text-primary);
 }
 
 .donut-chart__label {
   font-size: $font-size-xs;
-  color: $text-muted;
+  color: var(--text-muted);
 }
 
-// Distribution list
+// =============================================================================
+// DISTRIBUTION LIST
+// =============================================================================
+
 .distribution-list {
   @include flex-column;
+  gap: $spacing-4;
 }
 
-// Portfolio selector dropdown
+.distribution-item {
+  @include flex-between;
+  padding: $spacing-4;
+  background-color: var(--surface-1);
+  border-radius: $radius-xl;
+  border: 1px solid var(--border-color-light);
+
+  &__left {
+    @include flex-start;
+    gap: $spacing-3;
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-lg;
+    @include flex-center;
+    background-color: rgba($color-primary, 0.1);
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: $color-primary;
+    }
+  }
+
+  &__info {
+    @include flex-column;
+    gap: $spacing-0;
+  }
+
+  &__name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--text-primary);
+  }
+
+  &__date {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+  }
+
+  &__amount {
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    color: var(--color-success);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// =============================================================================
+// PORTFOLIO SELECTOR
+// =============================================================================
+
 .portfolio-selector {
   position: relative;
 
@@ -315,23 +408,24 @@
     @include flex-start;
     gap: $spacing-2;
     padding: $spacing-2 $spacing-4;
-    background-color: $color-white;
-    border: 1px solid $color-gray-200;
-    border-radius: $radius-lg;
+    background-color: var(--surface-1);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-xl;
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    color: $text-primary;
+    color: var(--text-primary);
     cursor: pointer;
     transition: all $transition-fast;
 
     &:hover {
-      border-color: $color-gray-300;
+      border-color: var(--border-color-dark);
+      background-color: var(--surface-2);
     }
 
     svg {
       width: 16px;
       height: 16px;
-      color: $text-muted;
+      color: var(--text-muted);
     }
   }
 
@@ -345,12 +439,12 @@
     position: absolute;
     top: 100%;
     right: 0;
-    margin-top: $spacing-1;
-    min-width: 200px;
-    background-color: $color-white;
-    border: 1px solid $color-gray-200;
-    border-radius: $radius-lg;
-    box-shadow: $shadow-lg;
+    margin-top: $spacing-2;
+    min-width: 220px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-xl;
+    box-shadow: var(--shadow-lg);
     z-index: $z-dropdown;
     overflow: hidden;
   }
@@ -361,50 +455,57 @@
     padding: $spacing-3 $spacing-4;
     text-align: left;
     font-size: $font-size-sm;
-    color: $text-primary;
+    color: var(--text-primary);
     background: none;
     border: none;
     cursor: pointer;
     transition: background-color $transition-fast;
 
     &:hover {
-      background-color: $color-gray-50;
+      background-color: var(--surface-2);
     }
 
     &.is-active {
-      background-color: rgba($color-primary, 0.05);
+      background-color: rgba($color-primary, 0.1);
       color: $color-primary;
+      font-weight: $font-weight-medium;
     }
   }
 }
 
-// Breadcrumb
+// =============================================================================
+// BREADCRUMB
+// =============================================================================
+
 .breadcrumb {
   @include flex-start;
   gap: $spacing-2;
   font-size: $font-size-sm;
 
   &__link {
-    color: $text-secondary;
+    color: var(--text-secondary);
     text-decoration: none;
     transition: color $transition-fast;
 
     &:hover {
-      color: $color-primary;
+      color: var(--color-primary);
     }
   }
 
   &__separator {
-    color: $text-muted;
+    color: var(--text-muted);
   }
 
   &__current {
-    color: $text-primary;
+    color: var(--text-primary);
     font-weight: $font-weight-medium;
   }
 }
 
-// Investment header (detail page)
+// =============================================================================
+// INVESTMENT HEADER
+// =============================================================================
+
 .investment-header {
   display: grid;
   gap: $spacing-6;
@@ -414,7 +515,10 @@
   }
 }
 
-// Stats grid compact variant
+// =============================================================================
+// STATS GRID VARIANTS
+// =============================================================================
+
 .stats-grid--compact {
   grid-template-columns: repeat(2, 1fr);
 
@@ -423,20 +527,41 @@
   }
 }
 
-// Page actions
+// =============================================================================
+// PAGE ACTIONS
+// =============================================================================
+
 .page-actions {
   @include flex-start;
   gap: $spacing-4;
-  padding-top: $spacing-4;
-  border-top: 1px solid $color-gray-100;
+  padding-top: $spacing-5;
+  border-top: 1px solid var(--border-color-light);
 }
 
-// Empty state for cards
+// =============================================================================
+// EMPTY STATE
+// =============================================================================
+
 .card__body--empty {
   @include flex-column-center;
-  padding: $spacing-8;
+  padding: $spacing-12;
   text-align: center;
-  color: $text-secondary;
+  color: var(--text-secondary);
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: $radius-full;
+    background-color: var(--surface-2);
+    @include flex-center;
+    margin-bottom: $spacing-4;
+
+    svg {
+      width: 28px;
+      height: 28px;
+      color: var(--text-muted);
+    }
+  }
 
   p {
     margin-bottom: $spacing-2;
@@ -448,39 +573,55 @@
 
   .text-muted {
     font-size: $font-size-sm;
-    color: $text-muted;
+    color: var(--text-muted);
   }
 }
 
-// Skeleton loading states
+// =============================================================================
+// SKELETON LOADING STATES
+// =============================================================================
+
 .skeleton {
   background: linear-gradient(
     90deg,
-    $color-gray-100 25%,
-    $color-gray-200 50%,
-    $color-gray-100 75%
+    var(--surface-2) 25%,
+    var(--surface-3) 50%,
+    var(--surface-2) 75%
   );
   background-size: 200% 100%;
-  animation: skeleton-loading 1.5s infinite;
-  border-radius: $radius-md;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+  border-radius: $radius-lg;
 
   &--text {
     height: 20px;
   }
 
+  &--heading {
+    height: 32px;
+    width: 60%;
+  }
+
   &--chart {
     height: 100%;
-    min-height: 250px;
+    min-height: 280px;
+    border-radius: $radius-2xl;
   }
 
   &--table {
     height: 100%;
-    min-height: 250px;
+    min-height: 280px;
+    border-radius: $radius-2xl;
   }
 
   &--list {
     height: 100%;
-    min-height: 150px;
+    min-height: 180px;
+    border-radius: $radius-2xl;
+  }
+
+  &--card {
+    height: 200px;
+    border-radius: $radius-2xl;
   }
 }
 
@@ -493,7 +634,10 @@
   }
 }
 
-// Animate pulse utility
+// =============================================================================
+// ANIMATE PULSE UTILITY
+// =============================================================================
+
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

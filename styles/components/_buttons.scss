@@ -1,23 +1,29 @@
 // =============================================================================
-// BUTTONS
+// BUTTONS - Lumin Design System
+// Bold, rounded buttons with lime accent
 // =============================================================================
 
 @use 'sass:color';
 @use '../abstracts' as *;
 
-// Base button
+// =============================================================================
+// BASE BUTTON
+// =============================================================================
+
 .btn {
   @include button-base;
 
   // Sizes
   &--sm {
-    padding: $spacing-2 $spacing-3;
+    padding: $spacing-2 $spacing-4;
     font-size: $font-size-xs;
+    border-radius: $radius-lg;
   }
 
   &--lg {
-    padding: $spacing-4 $spacing-6;
+    padding: $spacing-4 $spacing-8;
     font-size: $font-size-base;
+    border-radius: $radius-2xl;
   }
 
   // Variants
@@ -33,9 +39,13 @@
     @include button-ghost;
   }
 
+  &--dark {
+    @include button-dark;
+  }
+
   &--danger {
     @include button-base;
-    background-color: $color-error;
+    background-color: var(--color-error);
     color: $color-white;
 
     &:hover:not(:disabled) {
@@ -45,7 +55,7 @@
 
   &--success {
     @include button-base;
-    background-color: $color-success;
+    background-color: var(--color-success);
     color: $color-white;
 
     &:hover:not(:disabled) {
@@ -56,23 +66,23 @@
   &--outline {
     @include button-base;
     background-color: transparent;
-    border: 1px solid var(--gray-300);
+    border: 2px solid var(--border-color);
     color: var(--text-primary);
 
     &:hover:not(:disabled) {
-      background-color: var(--gray-50);
-      border-color: var(--gray-400);
+      background-color: var(--surface-2);
+      border-color: var(--border-color-dark);
     }
   }
 
   &--outline-primary {
     @include button-base;
     background-color: transparent;
-    border: 1px solid var(--color-primary);
-    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    color: $color-primary;
 
     &:hover:not(:disabled) {
-      background-color: rgba(var(--color-primary-rgb), 0.1);
+      background-color: rgba($color-primary, 0.1);
     }
   }
 
@@ -84,6 +94,7 @@
   // Icon only
   &--icon {
     padding: $spacing-3;
+    border-radius: $radius-lg;
 
     &.btn--sm {
       padding: $spacing-2;
@@ -103,8 +114,8 @@
     &::after {
       content: '';
       position: absolute;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border: 2px solid currentColor;
       border-right-color: transparent;
       border-radius: $radius-full;
@@ -113,30 +124,45 @@
   }
 }
 
-// Icon button
+// =============================================================================
+// ICON BUTTON
+// =============================================================================
+
 .icon-btn {
   @include flex-center;
-  width: 40px;
-  height: 40px;
-  border-radius: $radius-lg;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-xl;
   background-color: transparent;
   color: var(--text-secondary);
   transition: all $transition-fast;
+  border: 1px solid transparent;
   @include focus-ring;
 
   &:hover {
-    background-color: var(--gray-100);
+    background-color: var(--surface-2);
     color: var(--text-primary);
   }
 
+  &--bordered {
+    border-color: var(--border-color-light);
+    background-color: var(--surface-1);
+
+    &:hover {
+      border-color: var(--border-color);
+    }
+  }
+
   &--sm {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-lg;
   }
 
   &--lg {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
+    border-radius: $radius-2xl;
   }
 
   svg {
@@ -145,49 +171,116 @@
   }
 }
 
-// Button group
+// =============================================================================
+// BUTTON GROUP
+// =============================================================================
+
 .btn-group {
   display: inline-flex;
-  border-radius: $radius-lg;
+  border-radius: $radius-xl;
   overflow: hidden;
+  background-color: var(--surface-2);
+  padding: $spacing-1;
+  gap: $spacing-1;
 
   .btn {
-    border-radius: 0;
-    border-right: 1px solid rgba($color-white, 0.2);
+    border-radius: $radius-lg;
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: none;
 
-    &:last-child {
-      border-right: none;
+    &:hover:not(.is-active) {
+      background-color: var(--surface-3);
+      color: var(--text-primary);
+    }
+
+    &.is-active {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
     }
   }
 }
 
-// Floating action button
+// =============================================================================
+// FLOATING ACTION BUTTON
+// =============================================================================
+
 .fab {
   @include flex-center;
   position: fixed;
   bottom: $spacing-8;
   right: $spacing-8;
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: $radius-full;
   background-color: $color-primary;
-  color: $color-white;
-  box-shadow: $shadow-lg;
+  color: $color-primary-contrast;
+  box-shadow: var(--shadow-lg);
   transition: all $transition-fast;
   z-index: $z-sticky;
+  border: none;
+  cursor: pointer;
 
   &:hover {
-    background-color: $color-primary-dark;
+    background-color: $color-primary-light;
     transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba($color-primary, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 
   svg {
     width: 24px;
     height: 24px;
   }
+
+  @include respond-below('md') {
+    bottom: $spacing-6;
+    right: $spacing-6;
+    width: 56px;
+    height: 56px;
+  }
 }
 
-// Animations
+// =============================================================================
+// LINK BUTTON
+// =============================================================================
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: var(--color-primary-dark);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    transition: transform $transition-fast;
+  }
+
+  &:hover svg {
+    transform: translateX(2px);
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

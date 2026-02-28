@@ -1,5 +1,6 @@
 // =============================================================================
-// CARDS
+// CARDS - Lumin Design System
+// Large rounded corners (20-24px), soft shadows, dark featured cards
 // =============================================================================
 
 @use '../abstracts' as *;
@@ -22,13 +23,17 @@
     padding: $spacing-4;
   }
 
+  &--flush {
+    padding: 0;
+  }
+
   &__header {
     @include flex-between;
-    margin-bottom: $spacing-4;
+    margin-bottom: $spacing-5;
   }
 
   &__title {
-    font-size: $font-size-base;
+    font-size: $font-size-lg;
     font-weight: $font-weight-semibold;
     color: var(--text-primary);
   }
@@ -49,19 +54,96 @@
   }
 
   &__footer {
-    margin-top: $spacing-4;
-    padding-top: $spacing-4;
+    margin-top: $spacing-5;
+    padding-top: $spacing-5;
     border-top: 1px solid var(--border-color-light);
   }
 }
 
-// Stats card (like Total Balance in design)
+// =============================================================================
+// FEATURED CARD - Dark gradient card for hero metrics
+// Used for: Portfolio Value, Total Balance, etc.
+// =============================================================================
+
+.featured-card {
+  @include card-dark;
+  min-height: 200px;
+
+  &__content {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: $spacing-3;
+  }
+
+  &__value {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    margin-bottom: $spacing-4;
+
+    @include respond-to('lg') {
+      font-size: $font-size-5xl;
+    }
+  }
+
+  &__change {
+    @include flex-start;
+    gap: $spacing-2;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+
+    &--positive {
+      color: var(--color-success);
+    }
+
+    &--negative {
+      color: var(--color-error);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &__period {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: $font-weight-normal;
+    margin-left: $spacing-2;
+  }
+
+  &__chart {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    opacity: 0.3;
+  }
+}
+
+// =============================================================================
+// STAT CARD - Standard metric cards
+// =============================================================================
+
 .stat-card {
   @include card;
+  display: flex;
+  flex-direction: column;
 
   &__header {
     @include flex-between;
-    margin-bottom: $spacing-3;
+    margin-bottom: $spacing-4;
   }
 
   &__label {
@@ -71,16 +153,24 @@
   }
 
   &__icon {
-    width: 32px;
-    height: 32px;
-    border-radius: $radius-md;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-lg;
     @include flex-center;
-    background-color: var(--gray-100);
+    background-color: var(--surface-2);
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       color: var(--text-secondary);
+    }
+
+    &--accent {
+      background-color: rgba($color-primary, 0.1);
+
+      svg {
+        color: $color-primary;
+      }
     }
   }
 
@@ -89,6 +179,7 @@
     font-weight: $font-weight-bold;
     color: var(--text-primary);
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
     margin-bottom: $spacing-2;
   }
 
@@ -117,68 +208,105 @@
   }
 }
 
-// Highlight card (coral/orange cards like Total Earnings)
-.highlight-card {
-  @include card;
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
-  color: $color-white;
+// =============================================================================
+// ACCENT CARD - Lime gradient accent cards
+// Used for: CTAs, promotional content
+// =============================================================================
+
+.accent-card {
+  @include card-accent;
 
   &__icon {
-    width: 36px;
-    height: 36px;
-    border-radius: $radius-md;
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-lg;
     @include flex-center;
-    background-color: rgba($color-white, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
     margin-bottom: $spacing-4;
 
     svg {
-      width: 20px;
-      height: 20px;
-      color: $color-white;
+      width: 24px;
+      height: 24px;
+      color: $color-primary-contrast;
     }
   }
 
   &__label {
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    color: rgba($color-white, 0.8);
+    color: rgba(0, 0, 0, 0.6);
     margin-bottom: $spacing-2;
   }
 
   &__value {
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
+    color: $color-primary-contrast;
     font-variant-numeric: tabular-nums;
     margin-bottom: $spacing-3;
   }
 
-  &__change {
-    @include flex-start;
-    gap: $spacing-2;
+  &__text {
     font-size: $font-size-sm;
-    color: rgba($color-white, 0.9);
-
-    svg {
-      width: 14px;
-      height: 14px;
-    }
+    color: rgba(0, 0, 0, 0.7);
   }
 }
 
-// Wallet card (multi-currency display)
+// =============================================================================
+// BENTO CARD - For dashboard grid layouts
+// =============================================================================
+
+.bento-card {
+  @include bento-card;
+
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+  }
+
+  &__action {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--color-primary);
+    transition: color $transition-fast;
+
+    &:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+// =============================================================================
+// WALLET CARD - Currency/account cards
+// =============================================================================
+
 .wallet-card {
   @include card($padding: $spacing-4);
   @include flex-between;
-  min-width: 140px;
+  min-width: 180px;
   cursor: pointer;
   transition: all $transition-fast;
 
   &:hover {
-    border-color: $color-primary;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
   }
 
   &.is-active {
-    border: 2px solid $color-primary;
+    border: 2px solid var(--color-primary);
+    background-color: rgba($color-primary, 0.02);
   }
 
   &.is-inactive {
@@ -187,7 +315,7 @@
 
   &__content {
     @include flex-column;
-    gap: $spacing-1;
+    gap: $spacing-2;
   }
 
   &__currency {
@@ -199,14 +327,14 @@
   }
 
   &__flag {
-    width: 20px;
-    height: 14px;
-    border-radius: 2px;
+    width: 24px;
+    height: 18px;
+    border-radius: 4px;
     object-fit: cover;
   }
 
   &__balance {
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
     font-weight: $font-weight-bold;
     color: var(--text-primary);
     font-variant-numeric: tabular-nums;
@@ -219,9 +347,9 @@
 
   &__status {
     font-size: $font-size-xs;
-    font-weight: $font-weight-medium;
-    padding: $spacing-1 $spacing-2;
-    border-radius: $radius-sm;
+    font-weight: $font-weight-semibold;
+    padding: $spacing-1 $spacing-3;
+    border-radius: $radius-full;
 
     &--active {
       background-color: var(--color-success-light);
@@ -229,51 +357,55 @@
     }
 
     &--inactive {
-      background-color: var(--gray-100);
+      background-color: var(--surface-2);
       color: var(--text-muted);
     }
   }
 }
 
-// Bank card (credit/debit card display)
+// =============================================================================
+// BANK CARD - Credit/debit card display
+// =============================================================================
+
 .bank-card {
   position: relative;
-  width: 280px;
-  height: 170px;
-  border-radius: $radius-xl;
-  padding: $spacing-5;
+  width: 320px;
+  height: 190px;
+  border-radius: $radius-2xl;
+  padding: $spacing-6;
   @include flex-column;
   justify-content: space-between;
   overflow: hidden;
   color: $color-white;
 
   &--dark {
-    background: linear-gradient(145deg, #2D2D3A 0%, #1E1E2D 100%);
+    background: var(--gradient-dark);
   }
 
   &--primary {
-    background: linear-gradient(145deg, $color-primary 0%, $color-primary-dark 100%);
+    background: var(--gradient-primary);
+    color: $color-primary-contrast;
   }
 
   &__chip {
-    width: 40px;
-    height: 30px;
+    width: 50px;
+    height: 38px;
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    border-radius: $radius-sm;
+    border-radius: $radius-md;
   }
 
   &__brand {
     position: absolute;
-    top: $spacing-5;
-    right: $spacing-5;
-    width: 50px;
+    top: $spacing-6;
+    right: $spacing-6;
+    width: 60px;
     height: auto;
   }
 
   &__number {
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
     font-weight: $font-weight-medium;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     font-variant-numeric: tabular-nums;
   }
 
@@ -283,8 +415,9 @@
 
   &__label {
     font-size: $font-size-xs;
-    color: rgba($color-white, 0.6);
+    color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin-bottom: $spacing-1;
   }
 
@@ -295,21 +428,34 @@
 
   &__badge {
     position: absolute;
-    top: $spacing-3;
-    left: $spacing-3;
+    top: $spacing-4;
+    left: $spacing-4;
     font-size: $font-size-xs;
-    font-weight: $font-weight-medium;
-    padding: $spacing-1 $spacing-2;
-    border-radius: $radius-sm;
-    background-color: $color-success;
+    font-weight: $font-weight-semibold;
+    padding: $spacing-1 $spacing-3;
+    border-radius: $radius-full;
+    background-color: var(--color-success);
+    color: $color-white;
   }
 }
+
+// =============================================================================
+// LAYOUT HELPERS
+// =============================================================================
 
 // Stats grid
 .stats-grid {
   display: grid;
   gap: $spacing-6;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1fr;
+
+  @include respond-to('sm') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
 }
 
 // Wallets row
@@ -319,4 +465,27 @@
   overflow-x: auto;
   padding-bottom: $spacing-2;
   @include custom-scrollbar;
+
+  // Hide scrollbar on mobile for cleaner look
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+}
+
+// Bento grid layout
+.bento-grid {
+  @include bento-grid;
+
+  // Span utilities
+  &__item {
+    @include respond-to('lg') {
+      &--span-3 { grid-column: span 3; }
+      &--span-4 { grid-column: span 4; }
+      &--span-5 { grid-column: span 5; }
+      &--span-6 { grid-column: span 6; }
+      &--span-7 { grid-column: span 7; }
+      &--span-8 { grid-column: span 8; }
+      &--span-12 { grid-column: span 12; }
+    }
+  }
 }

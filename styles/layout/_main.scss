@@ -1,36 +1,118 @@
 // =============================================================================
-// MAIN LAYOUT
+// MAIN LAYOUT - Lumin Design System
+// Top navigation, bento grid layouts, clean spacing
 // =============================================================================
 
 @use '../abstracts' as *;
 
+// =============================================================================
+// APP LAYOUT
+// =============================================================================
+
 .app-layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background-color: var(--bg-page);
 }
 
 .main-content {
   flex: 1;
-  margin-left: $sidebar-width;
   min-height: 100vh;
+  padding-top: $nav-height;
+}
 
-  @include respond-below('lg') {
-    margin-left: 0;
+// =============================================================================
+// TOP NAVIGATION
+// =============================================================================
+
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $nav-height;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color-light);
+  z-index: $z-fixed;
+  @include flex-between;
+  padding: 0 $spacing-6;
+
+  @include respond-below('md') {
+    padding: 0 $spacing-4;
+  }
+
+  &__left {
+    @include flex-start;
+    gap: $spacing-8;
+  }
+
+  &__brand {
+    @include flex-start;
+    gap: $spacing-3;
+  }
+
+  &__logo {
+    width: 36px;
+    height: 36px;
+    background-color: $color-primary;
+    border-radius: $radius-lg;
+    @include flex-center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: $color-primary-contrast;
+    }
+  }
+
+  &__name {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+
+    @include respond-below('sm') {
+      display: none;
+    }
+  }
+
+  &__right {
+    @include flex-start;
+    gap: $spacing-4;
   }
 }
 
-.page-header {
-  @include flex-between;
-  padding: $spacing-6 $spacing-8;
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border-color-light);
+// Pill navigation tabs
+.nav-pills {
+  @include pill-nav;
 
   @include respond-below('md') {
-    padding: $spacing-4;
-    flex-direction: column;
-    align-items: flex-start;
+    display: none;
+  }
+
+  &__item {
+    @include pill-nav-item;
+    text-decoration: none;
+  }
+}
+
+// =============================================================================
+// PAGE HEADER
+// =============================================================================
+
+.page-header {
+  padding: $spacing-8;
+  background-color: transparent;
+
+  @include respond-below('md') {
+    padding: $spacing-6 $spacing-4;
+  }
+
+  &__top {
+    @include flex-between;
+    flex-wrap: wrap;
     gap: $spacing-4;
+    margin-bottom: $spacing-6;
   }
 
   &__left {
@@ -42,9 +124,10 @@
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
     color: var(--text-primary);
+    letter-spacing: -0.01em;
 
-    @include respond-below('md') {
-      font-size: $font-size-xl;
+    @include respond-to('lg') {
+      font-size: $font-size-3xl;
     }
   }
 
@@ -55,7 +138,7 @@
 
   &__right {
     @include flex-start;
-    gap: $spacing-4;
+    gap: $spacing-3;
   }
 
   &__search {
@@ -69,6 +152,7 @@
     input {
       @include input-base;
       padding-left: $spacing-10;
+      background-color: var(--surface-1);
     }
 
     svg {
@@ -89,16 +173,18 @@
 
   &__icon-btn {
     @include flex-center;
-    width: 40px;
-    height: 40px;
-    border-radius: $radius-lg;
-    background-color: var(--gray-50);
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-xl;
+    background-color: var(--surface-1);
     color: var(--text-secondary);
     transition: all $transition-fast;
+    border: 1px solid var(--border-color-light);
 
     &:hover {
-      background-color: var(--gray-100);
+      background-color: var(--surface-2);
       color: var(--text-primary);
+      border-color: var(--border-color);
     }
 
     svg {
@@ -108,11 +194,15 @@
   }
 }
 
+// =============================================================================
+// PAGE CONTENT
+// =============================================================================
+
 .page-content {
-  padding: $spacing-8;
+  padding: 0 $spacing-8 $spacing-8;
 
   @include respond-below('md') {
-    padding: $spacing-4;
+    padding: 0 $spacing-4 $spacing-4;
   }
 }
 
@@ -132,13 +222,20 @@
   }
 }
 
-// Content sections
+// =============================================================================
+// CONTENT SECTIONS
+// =============================================================================
+
 .section {
   margin-bottom: $spacing-8;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   &__header {
     @include flex-between;
-    margin-bottom: $spacing-4;
+    margin-bottom: $spacing-5;
   }
 
   &__title {
@@ -152,9 +249,246 @@
     font-weight: $font-weight-medium;
     color: var(--color-primary);
     transition: color $transition-fast;
+    text-decoration: none;
 
     &:hover {
       color: var(--color-primary-dark);
+    }
+  }
+}
+
+// =============================================================================
+// DASHBOARD BENTO GRID
+// =============================================================================
+
+.dashboard-grid {
+  @include bento-grid;
+
+  // Featured stat (Portfolio Value) - spans 5 cols
+  &__featured {
+    @include respond-to('lg') {
+      grid-column: span 5;
+    }
+  }
+
+  // Chart section - spans 7 cols
+  &__chart {
+    @include respond-to('lg') {
+      grid-column: span 7;
+    }
+  }
+
+  // Half width items - span 6 cols
+  &__half {
+    @include respond-to('lg') {
+      grid-column: span 6;
+    }
+  }
+
+  // Third width items - span 4 cols
+  &__third {
+    @include respond-to('lg') {
+      grid-column: span 4;
+    }
+  }
+
+  // Full width - span 12 cols
+  &__full {
+    @include respond-to('lg') {
+      grid-column: span 12;
+    }
+  }
+}
+
+// =============================================================================
+// USER AVATAR & PROFILE
+// =============================================================================
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  overflow: hidden;
+  background-color: var(--surface-2);
+  @include flex-center;
+  cursor: pointer;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__initials {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-secondary);
+  }
+
+  &--sm {
+    width: 32px;
+    height: 32px;
+  }
+
+  &--lg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+// =============================================================================
+// EMPTY STATES
+// =============================================================================
+
+.empty-state {
+  @include flex-column-center;
+  padding: $spacing-12;
+  text-align: center;
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: $radius-full;
+    background-color: var(--surface-2);
+    @include flex-center;
+    margin-bottom: $spacing-4;
+
+    svg {
+      width: 32px;
+      height: 32px;
+      color: var(--text-muted);
+    }
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    margin-bottom: $spacing-2;
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    max-width: 320px;
+    margin-bottom: $spacing-6;
+  }
+}
+
+// =============================================================================
+// MOBILE MENU
+// =============================================================================
+
+.mobile-menu {
+  display: none;
+
+  @include respond-below('md') {
+    display: block;
+  }
+
+  &__trigger {
+    @include flex-center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-overlay);
+    z-index: $z-modal-backdrop;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $transition-base, visibility $transition-base;
+
+    &.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &__drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: var(--bg-card);
+    z-index: $z-modal;
+    transform: translateX(100%);
+    transition: transform $transition-base;
+    padding: $spacing-6;
+    @include flex-column;
+
+    &.is-open {
+      transform: translateX(0);
+    }
+  }
+
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-6;
+  }
+
+  &__close {
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__nav {
+    @include flex-column;
+    gap: $spacing-1;
+    flex: 1;
+  }
+
+  &__link {
+    @include flex-start;
+    gap: $spacing-3;
+    padding: $spacing-3 $spacing-4;
+    border-radius: $radius-lg;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: var(--surface-2);
+      color: var(--text-primary);
+    }
+
+    &.is-active {
+      background-color: rgba($color-primary, 0.1);
+      color: $color-primary;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
     }
   }
 }

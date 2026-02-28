@@ -1,5 +1,5 @@
 // =============================================================================
-// TYPOGRAPHY
+// TYPOGRAPHY - Lumin Design System
 // =============================================================================
 
 @use '../abstracts' as *;
@@ -8,46 +8,58 @@ body {
   font-family: $font-family-base;
   font-size: $font-size-base;
   font-weight: $font-weight-normal;
-  color: $text-primary;
+  color: var(--text-primary);
   line-height: $line-height-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-// Headings
+// Headings - Lumin uses bold, clean typography
 // -----------------------------------------------------------------------------
 
 .heading-1 {
-  font-size: $font-size-4xl;
+  font-size: $font-size-5xl;
   font-weight: $font-weight-bold;
-  line-height: $line-height-tight;
-  color: $text-primary;
+  line-height: 1.1;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .heading-2 {
-  font-size: $font-size-3xl;
+  font-size: $font-size-4xl;
   font-weight: $font-weight-bold;
-  line-height: $line-height-tight;
-  color: $text-primary;
+  line-height: 1.15;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
 }
 
 .heading-3 {
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-semibold;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
   line-height: $line-height-tight;
-  color: $text-primary;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
 .heading-4 {
-  font-size: $font-size-xl;
+  font-size: $font-size-2xl;
   font-weight: $font-weight-semibold;
   line-height: $line-height-tight;
-  color: $text-primary;
+  color: var(--text-primary);
 }
 
 .heading-5 {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: var(--text-primary);
+}
+
+.heading-6 {
   font-size: $font-size-lg;
   font-weight: $font-weight-medium;
   line-height: $line-height-tight;
-  color: $text-primary;
+  color: var(--text-primary);
 }
 
 // Body text
@@ -69,31 +81,39 @@ body {
   font-size: $font-size-xs;
 }
 
-// Text colors
+// Text colors - Use CSS variables for theme support
 // -----------------------------------------------------------------------------
 
 .text-primary {
-  color: $text-primary;
+  color: var(--text-primary);
 }
 
 .text-secondary {
-  color: $text-secondary;
+  color: var(--text-secondary);
 }
 
 .text-muted {
-  color: $text-muted;
+  color: var(--text-muted);
+}
+
+.text-inverse {
+  color: var(--text-inverse);
 }
 
 .text-success {
-  color: $color-success;
+  color: var(--color-success);
 }
 
 .text-warning {
-  color: $color-warning;
+  color: var(--color-warning);
 }
 
 .text-error {
-  color: $color-error;
+  color: var(--color-error);
+}
+
+.text-accent {
+  color: var(--color-primary);
 }
 
 // Font weights
@@ -135,7 +155,7 @@ body {
   letter-spacing: 0.05em;
 }
 
-// Money display
+// Money display - Tabular nums for alignment
 // -----------------------------------------------------------------------------
 
 .money {
@@ -144,9 +164,39 @@ body {
 }
 
 .money-positive {
-  color: $color-success;
+  color: var(--color-success);
 }
 
 .money-negative {
-  color: $color-error;
+  color: var(--color-error);
+}
+
+// Large value display (for hero stats)
+.value-display {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+
+  &--xl {
+    font-size: $font-size-5xl;
+  }
+
+  &--inverse {
+    color: var(--text-inverse);
+  }
+}
+
+// Label styles for cards
+.label {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+
+  &--inverse {
+    color: rgba(255, 255, 255, 0.7);
+  }
 }

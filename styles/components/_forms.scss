@@ -1,39 +1,70 @@
 // =============================================================================
-// FORMS
+// FORMS - Lumin Design System
+// Clean, rounded form elements with proper theming
 // =============================================================================
 
 @use '../abstracts' as *;
 
-// Form layout
+// =============================================================================
+// FORM LAYOUT
+// =============================================================================
+
 .form {
   @include flex-column;
-  gap: $spacing-5;
+  gap: $spacing-6;
+
+  &__section {
+    @include flex-column;
+    gap: $spacing-5;
+  }
+
+  &__section-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid var(--border-color-light);
+  }
 
   &__row {
     display: grid;
-    gap: $spacing-4;
+    gap: $spacing-5;
     grid-template-columns: 1fr;
 
     @include respond-to('md') {
       grid-template-columns: repeat(2, 1fr);
     }
+
+    &--3 {
+      @include respond-to('lg') {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
   }
 
   &__actions {
     @include flex-start;
-    gap: $spacing-3;
-    margin-top: $spacing-4;
+    gap: $spacing-4;
+    margin-top: $spacing-2;
+    padding-top: $spacing-6;
+    border-top: 1px solid var(--border-color-light);
   }
 }
 
-// Form group
+// =============================================================================
+// FORM GROUP
+// =============================================================================
+
 .form-group {
   @include flex-column;
   gap: $spacing-2;
 }
 
-// Label
-.label {
+// =============================================================================
+// LABEL
+// =============================================================================
+
+.form-label {
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: var(--text-primary);
@@ -43,45 +74,78 @@
     color: var(--color-error);
     margin-left: $spacing-1;
   }
+
+  &__hint {
+    font-weight: $font-weight-normal;
+    color: var(--text-muted);
+    margin-left: $spacing-2;
+  }
 }
 
-// Input
+// =============================================================================
+// INPUT
+// =============================================================================
+
 .input {
   @include input-base;
+
+  &--lg {
+    @include input-lg;
+  }
 
   &--error {
     border-color: var(--color-error);
 
     &:focus {
       border-color: var(--color-error);
-      box-shadow: 0 0 0 3px rgba(var(--color-error-rgb), 0.1);
+      box-shadow: 0 0 0 3px rgba(var(--color-error-rgb), 0.15);
     }
   }
 
   &--success {
     border-color: var(--color-success);
+
+    &:focus {
+      border-color: var(--color-success);
+      box-shadow: 0 0 0 3px rgba(var(--color-success-rgb), 0.15);
+    }
   }
 }
 
-// Textarea
+// =============================================================================
+// TEXTAREA
+// =============================================================================
+
 .textarea {
   @include input-base;
-  min-height: 100px;
+  min-height: 120px;
   resize: vertical;
+  line-height: $line-height-normal;
 }
 
-// Select
+// =============================================================================
+// SELECT
+// =============================================================================
+
 .select {
   @include input-base;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right $spacing-3 center;
-  padding-right: $spacing-10;
+  background-position: right $spacing-4 center;
+  padding-right: $spacing-12;
   cursor: pointer;
+
+  &--lg {
+    @include input-lg;
+    background-position: right $spacing-5 center;
+  }
 }
 
-// Checkbox
+// =============================================================================
+// CHECKBOX
+// =============================================================================
+
 .checkbox {
   @include flex-start;
   gap: $spacing-3;
@@ -92,18 +156,19 @@
   }
 
   &__box {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--gray-300);
-    border-radius: $radius-sm;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color-dark);
+    border-radius: $radius-md;
     @include flex-center;
     transition: all $transition-fast;
     flex-shrink: 0;
+    background-color: var(--bg-input);
 
     svg {
       width: 12px;
       height: 12px;
-      color: var(--text-inverse);
+      color: $color-primary-contrast;
       opacity: 0;
       transform: scale(0.8);
       transition: all $transition-fast;
@@ -124,13 +189,28 @@
     box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--color-primary);
   }
 
+  &__input:disabled + &__box {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   &__label {
     font-size: $font-size-sm;
     color: var(--text-primary);
+    user-select: none;
+  }
+
+  &__description {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+    margin-top: $spacing-1;
   }
 }
 
-// Radio
+// =============================================================================
+// RADIO
+// =============================================================================
+
 .radio {
   @include flex-start;
   gap: $spacing-3;
@@ -141,20 +221,21 @@
   }
 
   &__circle {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--gray-300);
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color-dark);
     border-radius: $radius-full;
     @include flex-center;
     transition: all $transition-fast;
     flex-shrink: 0;
+    background-color: var(--bg-input);
 
     &::after {
       content: '';
       width: 8px;
       height: 8px;
       border-radius: $radius-full;
-      background-color: var(--text-inverse);
+      background-color: $color-primary-contrast;
       opacity: 0;
       transform: scale(0);
       transition: all $transition-fast;
@@ -178,10 +259,25 @@
   &__label {
     font-size: $font-size-sm;
     color: var(--text-primary);
+    user-select: none;
   }
 }
 
-// Toggle/Switch
+// Radio group
+.radio-group {
+  @include flex-column;
+  gap: $spacing-3;
+
+  &--horizontal {
+    flex-direction: row;
+    gap: $spacing-6;
+  }
+}
+
+// =============================================================================
+// TOGGLE/SWITCH
+// =============================================================================
+
 .toggle {
   @include flex-start;
   gap: $spacing-3;
@@ -192,21 +288,22 @@
   }
 
   &__track {
-    width: 44px;
-    height: 24px;
+    width: 48px;
+    height: 26px;
     background-color: var(--gray-300);
     border-radius: $radius-full;
     position: relative;
     transition: background-color $transition-fast;
+    flex-shrink: 0;
   }
 
   &__thumb {
     position: absolute;
-    top: 2px;
-    left: 2px;
+    top: 3px;
+    left: 3px;
     width: 20px;
     height: 20px;
-    background-color: var(--text-inverse);
+    background-color: $color-white;
     border-radius: $radius-full;
     box-shadow: var(--shadow-sm);
     transition: transform $transition-fast;
@@ -216,7 +313,7 @@
     background-color: var(--color-primary);
 
     .toggle__thumb {
-      transform: translateX(20px);
+      transform: translateX(22px);
     }
   }
 
@@ -224,23 +321,65 @@
     box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--color-primary);
   }
 
+  &__input:disabled + &__track {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &__content {
+    @include flex-column;
+    gap: $spacing-0;
+  }
+
   &__label {
     font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
     color: var(--text-primary);
+    user-select: none;
+  }
+
+  &__description {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
   }
 }
 
-// Help text
+// =============================================================================
+// HELP TEXT & ERROR MESSAGE
+// =============================================================================
+
 .help-text {
   font-size: $font-size-xs;
   color: var(--text-muted);
+  margin-top: $spacing-1;
 
   &--error {
     color: var(--color-error);
   }
+
+  &--success {
+    color: var(--color-success);
+  }
 }
 
-// Input with prefix/suffix
+.error-message {
+  @include flex-start;
+  gap: $spacing-2;
+  font-size: $font-size-xs;
+  color: var(--color-error);
+  margin-top: $spacing-1;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+}
+
+// =============================================================================
+// INPUT GROUP (prefix/suffix)
+// =============================================================================
+
 .input-group {
   position: relative;
   display: flex;
@@ -248,8 +387,8 @@
   &__prefix,
   &__suffix {
     @include flex-center;
-    padding: 0 $spacing-3;
-    background-color: var(--gray-50);
+    padding: 0 $spacing-4;
+    background-color: var(--surface-2);
     border: 1px solid var(--border-color);
     font-size: $font-size-sm;
     color: var(--text-secondary);
@@ -257,43 +396,47 @@
 
   &__prefix {
     border-right: none;
-    border-radius: $radius-lg 0 0 $radius-lg;
+    border-radius: $radius-xl 0 0 $radius-xl;
   }
 
   &__suffix {
     border-left: none;
-    border-radius: 0 $radius-lg $radius-lg 0;
+    border-radius: 0 $radius-xl $radius-xl 0;
   }
 
   .input {
     border-radius: 0;
 
     &:first-child {
-      border-radius: $radius-lg 0 0 $radius-lg;
+      border-radius: $radius-xl 0 0 $radius-xl;
     }
 
     &:last-child {
-      border-radius: 0 $radius-lg $radius-lg 0;
+      border-radius: 0 $radius-xl $radius-xl 0;
     }
   }
 }
 
-// Search input
+// =============================================================================
+// SEARCH INPUT
+// =============================================================================
+
 .search-input {
   position: relative;
 
   input {
     @include input-base;
-    padding-left: $spacing-10;
+    padding-left: $spacing-12;
+    padding-right: $spacing-10;
   }
 
   &__icon {
     position: absolute;
-    left: $spacing-3;
+    left: $spacing-4;
     top: 50%;
     transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     color: var(--text-muted);
     pointer-events: none;
   }
@@ -304,27 +447,182 @@
     top: 50%;
     transform: translateY(-50%);
     @include flex-center;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     border-radius: $radius-full;
     background-color: var(--gray-300);
-    color: var(--text-inverse);
+    color: $color-white;
     opacity: 0;
     cursor: pointer;
-    transition: opacity $transition-fast;
+    transition: all $transition-fast;
 
     &:hover {
       background-color: var(--gray-400);
     }
 
     svg {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
     }
   }
 
-  input:not(:placeholder-shown) + &__icon + &__clear,
-  input:focus:not(:placeholder-shown) ~ &__clear {
+  input:not(:placeholder-shown) ~ &__clear {
     opacity: 1;
+  }
+}
+
+// =============================================================================
+// RANGE SLIDER
+// =============================================================================
+
+.range-slider {
+  @include flex-column;
+  gap: $spacing-3;
+
+  &__header {
+    @include flex-between;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--text-primary);
+  }
+
+  &__value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__track {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    background-color: var(--surface-3);
+    border-radius: $radius-full;
+  }
+
+  &__fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: $radius-full;
+  }
+
+  &__thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: $color-white;
+    border: 3px solid var(--color-primary);
+    border-radius: $radius-full;
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+    transition: box-shadow $transition-fast;
+
+    &:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+      cursor: grabbing;
+      box-shadow: 0 0 0 4px rgba($color-primary, 0.2);
+    }
+  }
+
+  input[type="range"] {
+    width: 100%;
+    height: 6px;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+
+    &::-webkit-slider-track {
+      width: 100%;
+      height: 6px;
+      background-color: var(--surface-3);
+      border-radius: $radius-full;
+    }
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background-color: $color-white;
+      border: 3px solid var(--color-primary);
+      border-radius: $radius-full;
+      box-shadow: var(--shadow-sm);
+      cursor: grab;
+      margin-top: -7px;
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+
+  &__marks {
+    @include flex-between;
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+  }
+}
+
+// =============================================================================
+// FILE INPUT
+// =============================================================================
+
+.file-input {
+  &__dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: $radius-2xl;
+    padding: $spacing-8;
+    text-align: center;
+    cursor: pointer;
+    transition: all $transition-fast;
+    background-color: var(--surface-1);
+
+    &:hover {
+      border-color: var(--color-primary);
+      background-color: rgba($color-primary, 0.02);
+    }
+
+    &.is-dragging {
+      border-color: var(--color-primary);
+      background-color: rgba($color-primary, 0.05);
+    }
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto $spacing-4;
+    color: var(--text-muted);
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+
+    strong {
+      color: var(--color-primary);
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  &__hint {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+    margin-top: $spacing-2;
+  }
+
+  input[type="file"] {
+    @include visually-hidden;
   }
 }
