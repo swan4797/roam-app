@@ -1,0 +1,572 @@
+// =============================================================================
+// LANDING PAGE - Marketing homepage styles
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// =============================================================================
+// BASE LAYOUT
+// =============================================================================
+
+.landing {
+  min-height: 100vh;
+  background-color: $color-secondary;
+  color: $color-white;
+}
+
+// =============================================================================
+// NAVIGATION
+// =============================================================================
+
+.landing-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-fixed;
+  padding: $spacing-4 $spacing-6;
+  background-color: rgba($color-secondary, 0.9);
+  backdrop-filter: blur(12px);
+
+  @include respond-below('md') {
+    padding: $spacing-3 $spacing-4;
+  }
+
+  &__container {
+    max-width: $content-max-width;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+
+    @include respond-below('sm') {
+      gap: $spacing-2;
+    }
+  }
+
+  &__link {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: rgba($color-white, 0.8);
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-white;
+    }
+
+    @include respond-below('sm') {
+      display: none;
+    }
+  }
+}
+
+// =============================================================================
+// HERO SECTION
+// =============================================================================
+
+.landing-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-20 $spacing-6;
+  padding-top: calc($spacing-20 + 72px); // Account for fixed nav
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  @include respond-below('md') {
+    padding: $spacing-12 $spacing-4;
+    padding-top: calc($spacing-12 + 64px);
+    min-height: auto;
+  }
+
+  &__container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  &__badge {
+    display: inline-flex;
+    padding: $spacing-2 $spacing-4;
+    background-color: rgba($color-white, 0.1);
+    border-radius: $radius-full;
+    margin-bottom: $spacing-6;
+
+    span {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $color-primary;
+    }
+  }
+
+  &__title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: $font-weight-bold;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: $spacing-6;
+    color: $color-white;
+  }
+
+  &__highlight {
+    color: $color-primary;
+  }
+
+  &__subtitle {
+    font-size: $font-size-lg;
+    line-height: 1.6;
+    color: rgba($color-white, 0.7);
+    max-width: 600px;
+    margin: 0 auto $spacing-8;
+
+    @include respond-below('md') {
+      font-size: $font-size-base;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-4;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: $spacing-6;
+
+    @include respond-below('sm') {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__note {
+    font-size: $font-size-sm;
+    color: rgba($color-white, 0.5);
+  }
+
+  // Hero visual/card
+  &__visual {
+    margin-top: $spacing-12;
+    perspective: 1000px;
+
+    @include respond-below('md') {
+      margin-top: $spacing-8;
+    }
+  }
+
+  &__card {
+    background-color: $color-secondary-light;
+    border: 1px solid rgba($color-white, 0.1);
+    border-radius: $radius-2xl;
+    padding: $spacing-6;
+    min-width: 300px;
+    transform: rotateX(5deg);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+
+    @include respond-below('sm') {
+      min-width: auto;
+      width: 100%;
+      max-width: 320px;
+      padding: $spacing-5;
+    }
+  }
+
+  &__card-header {
+    margin-bottom: $spacing-4;
+  }
+
+  &__card-badge {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: rgba($color-white, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__card-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+
+  &__stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-3 0;
+    border-bottom: 1px solid rgba($color-white, 0.1);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--highlight {
+      .landing-hero__stat-value {
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__stat-label {
+    font-size: $font-size-sm;
+    color: rgba($color-white, 0.6);
+  }
+
+  &__stat-value {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// =============================================================================
+// FEATURES SECTION
+// =============================================================================
+
+.landing-features {
+  padding: $spacing-20 $spacing-6;
+  background-color: $color-white;
+  color: $text-primary;
+
+  @include respond-below('md') {
+    padding: $spacing-12 $spacing-4;
+  }
+
+  &__container {
+    max-width: $content-max-width;
+    margin: 0 auto;
+  }
+
+  &__header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto $spacing-12;
+
+    @include respond-below('md') {
+      margin-bottom: $spacing-8;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    letter-spacing: -0.02em;
+    margin-bottom: $spacing-4;
+
+    @include respond-below('md') {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  &__subtitle {
+    font-size: $font-size-lg;
+    color: $text-secondary;
+    line-height: 1.6;
+
+    @include respond-below('md') {
+      font-size: $font-size-base;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-8;
+
+    @include respond-below('lg') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-below('sm') {
+      grid-template-columns: 1fr;
+      gap: $spacing-6;
+    }
+  }
+}
+
+.landing-feature {
+  padding: $spacing-6;
+  background-color: $color-gray-50;
+  border-radius: $radius-2xl;
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-secondary;
+    border-radius: $radius-xl;
+    margin-bottom: $spacing-4;
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: $color-primary;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin-bottom: $spacing-2;
+    color: $text-primary;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    line-height: 1.6;
+  }
+}
+
+// =============================================================================
+// STEPS SECTION
+// =============================================================================
+
+.landing-steps {
+  padding: $spacing-20 $spacing-6;
+  background-color: $color-gray-50;
+
+  @include respond-below('md') {
+    padding: $spacing-12 $spacing-4;
+  }
+
+  &__container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    text-align: center;
+    letter-spacing: -0.02em;
+    margin-bottom: $spacing-12;
+    color: $text-primary;
+
+    @include respond-below('md') {
+      font-size: $font-size-2xl;
+      margin-bottom: $spacing-8;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-8;
+
+    @include respond-below('md') {
+      grid-template-columns: 1fr;
+      gap: $spacing-6;
+    }
+  }
+}
+
+.landing-step {
+  text-align: center;
+
+  @include respond-below('md') {
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+    gap: $spacing-4;
+  }
+
+  &__number {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-secondary;
+    color: $color-primary;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    border-radius: $radius-full;
+    margin: 0 auto $spacing-4;
+    flex-shrink: 0;
+
+    @include respond-below('md') {
+      width: 48px;
+      height: 48px;
+      font-size: $font-size-lg;
+      margin: 0;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin-bottom: $spacing-2;
+    color: $text-primary;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    line-height: 1.6;
+  }
+}
+
+// =============================================================================
+// CTA SECTION
+// =============================================================================
+
+.landing-cta {
+  padding: $spacing-20 $spacing-6;
+  background-color: $color-primary;
+  text-align: center;
+
+  @include respond-below('md') {
+    padding: $spacing-12 $spacing-4;
+  }
+
+  &__container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    letter-spacing: -0.02em;
+    margin-bottom: $spacing-4;
+    color: $color-primary-contrast;
+
+    @include respond-below('md') {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  &__subtitle {
+    font-size: $font-size-lg;
+    color: rgba($color-primary-contrast, 0.8);
+    margin-bottom: $spacing-8;
+    line-height: 1.6;
+
+    @include respond-below('md') {
+      font-size: $font-size-base;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+// =============================================================================
+// FOOTER
+// =============================================================================
+
+.landing-footer {
+  padding: $spacing-12 $spacing-6;
+  background-color: $color-secondary;
+  text-align: center;
+
+  @include respond-below('md') {
+    padding: $spacing-8 $spacing-4;
+  }
+
+  &__container {
+    max-width: $content-max-width;
+    margin: 0 auto;
+  }
+
+  &__brand {
+    margin-bottom: $spacing-6;
+  }
+
+  &__logo {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+  }
+
+  &__tagline {
+    font-size: $font-size-sm;
+    color: rgba($color-white, 0.6);
+    margin-top: $spacing-2;
+  }
+
+  &__links {
+    display: flex;
+    gap: $spacing-6;
+    justify-content: center;
+    margin-bottom: $spacing-6;
+
+    a {
+      font-size: $font-size-sm;
+      color: rgba($color-white, 0.7);
+      text-decoration: none;
+      transition: color $transition-fast;
+
+      &:hover {
+        color: $color-white;
+      }
+    }
+  }
+
+  &__copyright {
+    font-size: $font-size-xs;
+    color: rgba($color-white, 0.4);
+  }
+}
+
+// =============================================================================
+// BUTTON VARIANTS FOR LANDING PAGE
+// =============================================================================
+
+.btn--outline-light {
+  background-color: transparent;
+  border: 1px solid rgba($color-white, 0.3);
+  color: $color-white;
+
+  &:hover {
+    background-color: rgba($color-white, 0.1);
+    border-color: rgba($color-white, 0.5);
+  }
+}
+
+.btn--dark {
+  background-color: $color-secondary;
+  color: $color-white;
+
+  &:hover {
+    background-color: $color-secondary-light;
+  }
+}
+
+.btn--lg {
+  padding: $spacing-4 $spacing-8;
+  font-size: $font-size-base;
+  border-radius: $radius-full;
+
+  @include respond-below('sm') {
+    width: 100%;
+    justify-content: center;
+  }
+}
