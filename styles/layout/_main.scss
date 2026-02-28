@@ -18,8 +18,12 @@
 
 .main-content {
   flex: 1;
+  margin-left: $sidebar-width;
   min-height: 100vh;
-  padding-top: $nav-height;
+
+  @include respond-below('lg') {
+    margin-left: 0;
+  }
 }
 
 // =============================================================================
@@ -101,18 +105,16 @@
 // =============================================================================
 
 .page-header {
-  padding: $spacing-8;
-  background-color: transparent;
+  @include flex-between;
+  padding: $spacing-6 $spacing-8;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color-light);
 
   @include respond-below('md') {
-    padding: $spacing-6 $spacing-4;
-  }
-
-  &__top {
-    @include flex-between;
-    flex-wrap: wrap;
+    padding: $spacing-4;
+    flex-direction: column;
+    align-items: flex-start;
     gap: $spacing-4;
-    margin-bottom: $spacing-6;
   }
 
   &__left {
@@ -126,8 +128,8 @@
     color: var(--text-primary);
     letter-spacing: -0.01em;
 
-    @include respond-to('lg') {
-      font-size: $font-size-3xl;
+    @include respond-below('md') {
+      font-size: $font-size-xl;
     }
   }
 
@@ -138,7 +140,7 @@
 
   &__right {
     @include flex-start;
-    gap: $spacing-3;
+    gap: $spacing-4;
   }
 
   &__search {
@@ -152,7 +154,6 @@
     input {
       @include input-base;
       padding-left: $spacing-10;
-      background-color: var(--surface-1);
     }
 
     svg {
@@ -173,18 +174,16 @@
 
   &__icon-btn {
     @include flex-center;
-    width: 44px;
-    height: 44px;
-    border-radius: $radius-xl;
-    background-color: var(--surface-1);
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-lg;
+    background-color: var(--gray-50);
     color: var(--text-secondary);
     transition: all $transition-fast;
-    border: 1px solid var(--border-color-light);
 
     &:hover {
-      background-color: var(--surface-2);
+      background-color: var(--gray-100);
       color: var(--text-primary);
-      border-color: var(--border-color);
     }
 
     svg {
