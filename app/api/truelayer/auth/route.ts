@@ -21,11 +21,13 @@ export async function GET() {
 
   try {
     const authUrl = generateAuthUrl(state)
+    console.log("TrueLayer auth URL generated:", authUrl.substring(0, 100) + "...")
     return NextResponse.redirect(authUrl)
   } catch (error) {
     console.error("Failed to generate TrueLayer auth URL:", error)
+    const errorMessage = error instanceof Error ? error.message : "unknown"
     return NextResponse.redirect(
-      new URL("/accounts?error=config", process.env.NEXTAUTH_URL!)
+      new URL(`/dashboard/accounts?error=config&detail=${encodeURIComponent(errorMessage)}`, process.env.NEXTAUTH_URL!)
     )
   }
 }

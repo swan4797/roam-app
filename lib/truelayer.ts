@@ -46,6 +46,11 @@ export function generateAuthUrl(state: string): string {
     state,
   })
 
+  // In sandbox mode, add mock provider for testing
+  if (getEnv() === "sandbox") {
+    params.set("providers", "uk-ob-all uk-oauth-all")
+  }
+
   return `${getAuthUrl()}/?${params.toString()}`
 }
 

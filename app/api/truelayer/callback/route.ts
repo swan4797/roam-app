@@ -21,12 +21,12 @@ export async function GET(request: NextRequest) {
   if (error) {
     console.error("TrueLayer auth error:", error)
     return NextResponse.redirect(
-      new URL(`/accounts?error=${encodeURIComponent(error)}`, baseUrl)
+      new URL(`/dashboard/accounts?error=${encodeURIComponent(error)}`, baseUrl)
     )
   }
 
   if (!code || !state) {
-    return NextResponse.redirect(new URL("/accounts?error=invalid_response", baseUrl))
+    return NextResponse.redirect(new URL("/dashboard/accounts?error=invalid_response", baseUrl))
   }
 
   // Decode state to get user ID
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
   try {
     stateData = JSON.parse(Buffer.from(state, "base64url").toString())
   } catch {
-    return NextResponse.redirect(new URL("/accounts?error=invalid_state", baseUrl))
+    return NextResponse.redirect(new URL("/dashboard/accounts?error=invalid_state", baseUrl))
   }
 
   const { userId } = stateData
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
   // Verify user exists
   const user = await prisma.user.findUnique({ where: { id: userId } })
   if (!user) {
-    return NextResponse.redirect(new URL("/accounts?error=user_not_found", baseUrl))
+    return NextResponse.redirect(new URL("/dashboard/accounts?error=user_not_found", baseUrl))
   }
 
   try {
@@ -160,11 +160,11 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    return NextResponse.redirect(new URL("/accounts?success=connected", baseUrl))
+    return NextResponse.redirect(new URL("/dashboard/accounts?success=connected", baseUrl))
   } catch (error) {
     console.error("TrueLayer callback error:", error)
     return NextResponse.redirect(
-      new URL("/accounts?error=connection_failed", baseUrl)
+      new URL("/dashboard/accounts?error=connection_failed", baseUrl)
     )
   }
 }

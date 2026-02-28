@@ -1,8 +1,49 @@
 // =============================================================================
-// NOTIFICATIONS
+// NOTIFICATIONS & ALERTS
 // =============================================================================
 
 @use '../abstracts' as *;
+
+// =============================================================================
+// INLINE ALERTS
+// =============================================================================
+
+.alert {
+  @include flex-start;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  border-radius: $radius-lg;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &--success {
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+    border: 1px solid rgba($color-success, 0.2);
+  }
+
+  &--error {
+    background-color: var(--color-error-light);
+    color: var(--color-error);
+    border: 1px solid rgba($color-error, 0.2);
+  }
+
+  &--warning {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+    border: 1px solid rgba($color-warning, 0.2);
+  }
+
+  &--info {
+    background-color: var(--color-info-light);
+    color: var(--color-info);
+    border: 1px solid rgba($color-info, 0.2);
+  }
+}
 
 // Toast Container
 .toast-container {
