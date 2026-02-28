@@ -1,0 +1,292 @@
+// =============================================================================
+// DOCUMENT SIGNING
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// Document signing container
+.document-signing {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+// Progress indicator
+.signing-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  margin-bottom: $spacing-8;
+  padding: $spacing-4;
+
+  &__step {
+    @include flex-column-center;
+    gap: $spacing-2;
+  }
+
+  &__dot {
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    background-color: var(--gray-200);
+    color: var(--text-muted);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    transition: all $transition-fast;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: var(--text-muted);
+  }
+
+  &__line {
+    flex: 1;
+    max-width: 60px;
+    height: 2px;
+    background-color: var(--gray-200);
+  }
+
+  &__step.is-active &__dot {
+    background-color: var(--color-primary);
+    color: var(--text-inverse);
+  }
+
+  &__step.is-active &__label {
+    color: var(--text-primary);
+  }
+
+  &__step.is-complete &__dot {
+    background-color: var(--color-success);
+    color: var(--text-inverse);
+  }
+
+  &__step.is-complete &__label {
+    color: var(--color-success);
+  }
+}
+
+// Signing step
+.signing-step {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Document preview
+.document-preview {
+  background-color: var(--gray-50);
+  border-radius: $radius-lg;
+  padding: $spacing-8;
+  margin-bottom: $spacing-6;
+  text-align: center;
+
+  &__page {
+    @include flex-column-center;
+    gap: $spacing-3;
+    color: var(--text-secondary);
+
+    svg {
+      width: 48px;
+      height: 48px;
+      color: var(--gray-400);
+    }
+
+    p {
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      color: var(--text-primary);
+    }
+  }
+
+  &__info {
+    font-size: $font-size-sm;
+    color: var(--text-muted);
+  }
+}
+
+// Document details
+.document-details {
+  @include flex-column;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background-color: var(--gray-50);
+  border-radius: $radius-lg;
+
+  &__row {
+    @include flex-between;
+    font-size: $font-size-sm;
+  }
+
+  &__label {
+    color: var(--text-muted);
+  }
+
+  &__value {
+    color: var(--text-primary);
+    font-weight: $font-weight-medium;
+    font-family: $font-family-mono;
+  }
+}
+
+// Signature tabs
+.signature-tabs {
+  display: flex;
+  gap: $spacing-2;
+  margin-bottom: $spacing-6;
+  padding: $spacing-1;
+  background-color: var(--gray-100);
+  border-radius: $radius-lg;
+
+  &__tab {
+    flex: 1;
+    @include flex-center;
+    gap: $spacing-2;
+    padding: $spacing-3;
+    border: none;
+    background: transparent;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    &.is-active {
+      background-color: var(--bg-card);
+      color: var(--color-primary);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+// Signature pad
+.signature-pad {
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-3;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--text-primary);
+  }
+
+  &__canvas-wrapper {
+    position: relative;
+    margin-bottom: $spacing-2;
+  }
+
+  &__canvas {
+    display: block;
+    width: 100%;
+    border: 2px solid var(--border-color);
+    border-radius: $radius-lg;
+    cursor: crosshair;
+    touch-action: none;
+    background-color: var(--bg-card);
+  }
+
+  &__placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: $font-size-lg;
+    font-style: italic;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  &__line {
+    height: 2px;
+    background-color: var(--gray-300);
+    margin: $spacing-4 0;
+  }
+}
+
+// Signature type input
+.signature-type {
+  @include flex-column;
+  gap: $spacing-4;
+
+  &__input {
+    text-align: center;
+    font-size: $font-size-lg;
+  }
+
+  &__preview {
+    padding: $spacing-4;
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: $radius-lg;
+    text-align: center;
+    min-height: 80px;
+    @include flex-center;
+  }
+
+  &__text {
+    font-family: "Dancing Script", cursive, serif;
+    font-size: 32px;
+    color: var(--text-primary);
+  }
+}
+
+// Signature preview
+.signature-preview {
+  @include flex-column;
+  gap: $spacing-3;
+  margin-bottom: $spacing-6;
+
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--text-secondary);
+  }
+
+  &__box {
+    padding: $spacing-4;
+    background-color: var(--gray-50);
+    border: 2px solid var(--border-color);
+    border-radius: $radius-lg;
+    text-align: center;
+  }
+
+  &__image {
+    max-width: 100%;
+    max-height: 100px;
+  }
+}
+
+// Signing terms
+.signing-terms {
+  padding: $spacing-4;
+  background-color: var(--gray-50);
+  border-radius: $radius-lg;
+
+  .checkbox__label {
+    color: var(--text-secondary);
+    line-height: $line-height-relaxed;
+  }
+}

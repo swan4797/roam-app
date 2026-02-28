@@ -1,0 +1,330 @@
+// =============================================================================
+// FORMS
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// Form layout
+.form {
+  @include flex-column;
+  gap: $spacing-5;
+
+  &__row {
+    display: grid;
+    gap: $spacing-4;
+    grid-template-columns: 1fr;
+
+    @include respond-to('md') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__actions {
+    @include flex-start;
+    gap: $spacing-3;
+    margin-top: $spacing-4;
+  }
+}
+
+// Form group
+.form-group {
+  @include flex-column;
+  gap: $spacing-2;
+}
+
+// Label
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--text-primary);
+
+  &--required::after {
+    content: '*';
+    color: var(--color-error);
+    margin-left: $spacing-1;
+  }
+}
+
+// Input
+.input {
+  @include input-base;
+
+  &--error {
+    border-color: var(--color-error);
+
+    &:focus {
+      border-color: var(--color-error);
+      box-shadow: 0 0 0 3px rgba(var(--color-error-rgb), 0.1);
+    }
+  }
+
+  &--success {
+    border-color: var(--color-success);
+  }
+}
+
+// Textarea
+.textarea {
+  @include input-base;
+  min-height: 100px;
+  resize: vertical;
+}
+
+// Select
+.select {
+  @include input-base;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $spacing-3 center;
+  padding-right: $spacing-10;
+  cursor: pointer;
+}
+
+// Checkbox
+.checkbox {
+  @include flex-start;
+  gap: $spacing-3;
+  cursor: pointer;
+
+  &__input {
+    @include visually-hidden;
+  }
+
+  &__box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--gray-300);
+    border-radius: $radius-sm;
+    @include flex-center;
+    transition: all $transition-fast;
+    flex-shrink: 0;
+
+    svg {
+      width: 12px;
+      height: 12px;
+      color: var(--text-inverse);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all $transition-fast;
+    }
+  }
+
+  &__input:checked + &__box {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+
+    svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &__input:focus-visible + &__box {
+    box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--color-primary);
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: var(--text-primary);
+  }
+}
+
+// Radio
+.radio {
+  @include flex-start;
+  gap: $spacing-3;
+  cursor: pointer;
+
+  &__input {
+    @include visually-hidden;
+  }
+
+  &__circle {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--gray-300);
+    border-radius: $radius-full;
+    @include flex-center;
+    transition: all $transition-fast;
+    flex-shrink: 0;
+
+    &::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: $radius-full;
+      background-color: var(--text-inverse);
+      opacity: 0;
+      transform: scale(0);
+      transition: all $transition-fast;
+    }
+  }
+
+  &__input:checked + &__circle {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+
+    &::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &__input:focus-visible + &__circle {
+    box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--color-primary);
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: var(--text-primary);
+  }
+}
+
+// Toggle/Switch
+.toggle {
+  @include flex-start;
+  gap: $spacing-3;
+  cursor: pointer;
+
+  &__input {
+    @include visually-hidden;
+  }
+
+  &__track {
+    width: 44px;
+    height: 24px;
+    background-color: var(--gray-300);
+    border-radius: $radius-full;
+    position: relative;
+    transition: background-color $transition-fast;
+  }
+
+  &__thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--text-inverse);
+    border-radius: $radius-full;
+    box-shadow: var(--shadow-sm);
+    transition: transform $transition-fast;
+  }
+
+  &__input:checked + &__track {
+    background-color: var(--color-primary);
+
+    .toggle__thumb {
+      transform: translateX(20px);
+    }
+  }
+
+  &__input:focus-visible + &__track {
+    box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--color-primary);
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: var(--text-primary);
+  }
+}
+
+// Help text
+.help-text {
+  font-size: $font-size-xs;
+  color: var(--text-muted);
+
+  &--error {
+    color: var(--color-error);
+  }
+}
+
+// Input with prefix/suffix
+.input-group {
+  position: relative;
+  display: flex;
+
+  &__prefix,
+  &__suffix {
+    @include flex-center;
+    padding: 0 $spacing-3;
+    background-color: var(--gray-50);
+    border: 1px solid var(--border-color);
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+  }
+
+  &__prefix {
+    border-right: none;
+    border-radius: $radius-lg 0 0 $radius-lg;
+  }
+
+  &__suffix {
+    border-left: none;
+    border-radius: 0 $radius-lg $radius-lg 0;
+  }
+
+  .input {
+    border-radius: 0;
+
+    &:first-child {
+      border-radius: $radius-lg 0 0 $radius-lg;
+    }
+
+    &:last-child {
+      border-radius: 0 $radius-lg $radius-lg 0;
+    }
+  }
+}
+
+// Search input
+.search-input {
+  position: relative;
+
+  input {
+    @include input-base;
+    padding-left: $spacing-10;
+  }
+
+  &__icon {
+    position: absolute;
+    left: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  &__clear {
+    position: absolute;
+    right: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    @include flex-center;
+    width: 18px;
+    height: 18px;
+    border-radius: $radius-full;
+    background-color: var(--gray-300);
+    color: var(--text-inverse);
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      background-color: var(--gray-400);
+    }
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  input:not(:placeholder-shown) + &__icon + &__clear,
+  input:focus:not(:placeholder-shown) ~ &__clear {
+    opacity: 1;
+  }
+}

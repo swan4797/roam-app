@@ -1,0 +1,18 @@
+// =============================================================================
+// GLOBAL STYLES
+// =============================================================================
+
+@use '../styles/abstracts' as *;
+@use '../styles/base';
+@use '../styles/layout';
+@use '../styles/components';
+
+// Import Inter font
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+// Page background
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}

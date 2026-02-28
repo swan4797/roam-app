@@ -1,0 +1,363 @@
+// =============================================================================
+// NOTIFICATIONS
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// Toast Container
+.toast-container {
+  position: fixed;
+  top: $spacing-4;
+  right: $spacing-4;
+  z-index: 9999;
+  @include flex-column;
+  gap: $spacing-3;
+  max-width: 400px;
+  width: 100%;
+  pointer-events: none;
+
+  @include respond-below('sm') {
+    left: $spacing-4;
+    right: $spacing-4;
+    max-width: none;
+  }
+}
+
+// Toast Item
+.toast {
+  @include flex-start;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background-color: var(--bg-card);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid;
+  pointer-events: auto;
+  animation: slideIn 0.3s ease;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  &--success {
+    border-left-color: var(--color-success);
+
+    .toast__icon {
+      color: var(--color-success);
+    }
+  }
+
+  &--error {
+    border-left-color: var(--color-error);
+
+    .toast__icon {
+      color: var(--color-error);
+    }
+  }
+
+  &--warning {
+    border-left-color: var(--color-warning);
+
+    .toast__icon {
+      color: var(--color-warning);
+    }
+  }
+
+  &--info {
+    border-left-color: var(--color-info);
+
+    .toast__icon {
+      color: var(--color-info);
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  &__message {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    margin: $spacing-1 0 0;
+  }
+
+  &__dismiss {
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: $radius-sm;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: var(--gray-100);
+      color: var(--text-secondary);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// Notification Bell
+.notification-bell {
+  position: relative;
+
+  &__trigger {
+    @include flex-center;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-lg;
+    background-color: var(--gray-50);
+    color: var(--text-secondary);
+    border: none;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: var(--gray-100);
+      color: var(--text-primary);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 $spacing-1;
+    @include flex-center;
+    background-color: var(--color-error);
+    color: white;
+    font-size: 10px;
+    font-weight: $font-weight-bold;
+    border-radius: $radius-full;
+    border: 2px solid var(--bg-card);
+  }
+}
+
+// Notification Dropdown
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + $spacing-2);
+  right: 0;
+  width: 360px;
+  max-height: 480px;
+  background-color: var(--bg-card);
+  border-radius: $radius-xl;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: $z-dropdown;
+  animation: fadeInDown 0.2s ease;
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @include respond-below('sm') {
+    position: fixed;
+    top: $spacing-16;
+    right: $spacing-4;
+    left: $spacing-4;
+    width: auto;
+  }
+
+  &__header {
+    @include flex-between;
+    padding: $spacing-4;
+    border-bottom: 1px solid var(--border-color-light);
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  &__actions {
+    @include flex-start;
+    gap: $spacing-2;
+  }
+
+  &__list {
+    max-height: 400px;
+    overflow-y: auto;
+    @include custom-scrollbar;
+  }
+
+  &__empty {
+    @include flex-column-center;
+    padding: $spacing-8;
+    color: var(--text-muted);
+    text-align: center;
+
+    svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: $spacing-4;
+      opacity: 0.5;
+    }
+
+    p {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// Notification Item
+.notification-item {
+  @include flex-start;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  border-bottom: 1px solid var(--border-color-light);
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: var(--bg-card-hover);
+  }
+
+  &.is-unread {
+    background-color: rgba(var(--color-primary-rgb), 0.05);
+
+    &:hover {
+      background-color: rgba(var(--color-primary-rgb), 0.08);
+    }
+  }
+
+  &__icon {
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &--success {
+      background-color: var(--color-success-light);
+      color: var(--color-success);
+    }
+
+    &--error {
+      background-color: var(--color-error-light);
+      color: var(--color-error);
+    }
+
+    &--warning {
+      background-color: var(--color-warning-light);
+      color: var(--color-warning);
+    }
+
+    &--info {
+      background-color: var(--color-info-light);
+      color: var(--color-info);
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--text-primary);
+    margin: 0;
+    @include text-truncate;
+  }
+
+  &__message {
+    font-size: $font-size-xs;
+    color: var(--text-secondary);
+    margin: $spacing-1 0 0;
+    @include text-clamp(2);
+  }
+
+  &__time {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+    margin-top: $spacing-1;
+    display: block;
+  }
+
+  &__remove {
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: $radius-sm;
+    opacity: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: var(--gray-100);
+      color: var(--text-secondary);
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &:hover &__remove {
+    opacity: 1;
+  }
+}

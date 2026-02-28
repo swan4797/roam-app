@@ -1,0 +1,508 @@
+// =============================================================================
+// PORTFOLIO COMPONENTS
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// Page title row with selector
+.page-title-row {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+}
+
+.page-title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+}
+
+.page-subtitle {
+  margin-top: $spacing-1;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+// Property card
+.property-card {
+  @include card;
+  overflow: hidden;
+
+  &--clickable {
+    cursor: pointer;
+    transition: all $transition-base;
+
+    &:hover {
+      box-shadow: $shadow-lg;
+      transform: translateY(-2px);
+    }
+  }
+
+  &__image {
+    position: relative;
+    height: 160px;
+    margin: (-$spacing-6) (-$spacing-6) $spacing-4;
+    background-color: $color-gray-100;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__placeholder {
+    @include flex-center;
+    height: 100%;
+    background-color: $color-gray-100;
+
+    svg {
+      width: 48px;
+      height: 48px;
+      color: $color-gray-400;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: $spacing-3;
+    left: $spacing-3;
+  }
+
+  &__name {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-1;
+  }
+
+  &__location {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin-bottom: $spacing-3;
+  }
+
+  &__meta {
+    @include flex-start;
+    gap: $spacing-3;
+    font-size: $font-size-xs;
+    color: $text-muted;
+    margin-bottom: $spacing-4;
+  }
+
+  &__type {
+    text-transform: capitalize;
+  }
+
+  &__return {
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+  }
+
+  &__values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-4;
+    padding-top: $spacing-4;
+    border-top: 1px solid $color-gray-100;
+  }
+
+  &__value {
+    @include flex-column;
+    gap: $spacing-1;
+  }
+
+  &__value-label {
+    font-size: $font-size-xs;
+    color: $text-muted;
+  }
+
+  &__value-amount {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Property grid
+.property-grid {
+  display: grid;
+  gap: $spacing-6;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+// Investment cell in table
+.investment-cell {
+  @include flex-start;
+  gap: $spacing-3;
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-lg;
+    @include flex-center;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    @include flex-column;
+    gap: $spacing-1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    @include text-truncate;
+  }
+
+  &__location {
+    font-size: $font-size-xs;
+    color: $text-muted;
+    @include text-truncate;
+  }
+}
+
+// Return badge
+.return-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  font-variant-numeric: tabular-nums;
+
+  &--positive {
+    background-color: $color-success-light;
+    color: $color-success;
+  }
+
+  &--negative {
+    background-color: $color-error-light;
+    color: $color-error;
+  }
+}
+
+// Property type icon
+.property-type-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-lg;
+  @include flex-center;
+  background-color: rgba($color-primary, 0.1);
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: $color-primary;
+  }
+}
+
+// Allocation legend
+.allocation-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: $spacing-3;
+  margin-top: $spacing-4;
+  padding-top: $spacing-4;
+  border-top: 1px solid $color-gray-100;
+
+  &__item {
+    @include flex-start;
+    gap: $spacing-2;
+  }
+
+  &__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    flex: 1;
+    @include text-truncate;
+  }
+
+  &__value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Chart tooltip
+.chart-tooltip {
+  @include card($padding: $spacing-3);
+  font-size: $font-size-sm;
+  min-width: 120px;
+
+  &__label {
+    font-weight: $font-weight-semibold;
+    margin-bottom: $spacing-1;
+  }
+}
+
+// Chart legend
+.chart-legend {
+  @include flex-start;
+  gap: $spacing-4;
+  font-size: $font-size-xs;
+
+  &__item {
+    @include flex-start;
+    gap: $spacing-2;
+
+    &::before {
+      content: '';
+      width: 12px;
+      height: 3px;
+      border-radius: $radius-full;
+    }
+
+    &--primary::before {
+      background-color: $color-primary;
+    }
+
+    &--muted::before {
+      background-color: $color-gray-400;
+      border-style: dashed;
+    }
+  }
+}
+
+// Donut chart wrapper
+.donut-chart-wrapper {
+  position: relative;
+}
+
+.donut-chart__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-chart__value {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+}
+
+.donut-chart__label {
+  font-size: $font-size-xs;
+  color: $text-muted;
+}
+
+// Distribution list
+.distribution-list {
+  @include flex-column;
+}
+
+// Portfolio selector dropdown
+.portfolio-selector {
+  position: relative;
+
+  &__trigger {
+    @include flex-start;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-4;
+    background-color: $color-white;
+    border: 1px solid $color-gray-200;
+    border-radius: $radius-lg;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $color-gray-300;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: $text-muted;
+    }
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: $z-dropdown - 1;
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: $spacing-1;
+    min-width: 200px;
+    background-color: $color-white;
+    border: 1px solid $color-gray-200;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    z-index: $z-dropdown;
+    overflow: hidden;
+  }
+
+  &__option {
+    display: block;
+    width: 100%;
+    padding: $spacing-3 $spacing-4;
+    text-align: left;
+    font-size: $font-size-sm;
+    color: $text-primary;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $color-gray-50;
+    }
+
+    &.is-active {
+      background-color: rgba($color-primary, 0.05);
+      color: $color-primary;
+    }
+  }
+}
+
+// Breadcrumb
+.breadcrumb {
+  @include flex-start;
+  gap: $spacing-2;
+  font-size: $font-size-sm;
+
+  &__link {
+    color: $text-secondary;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  &__separator {
+    color: $text-muted;
+  }
+
+  &__current {
+    color: $text-primary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// Investment header (detail page)
+.investment-header {
+  display: grid;
+  gap: $spacing-6;
+
+  @include respond-to('lg') {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+// Stats grid compact variant
+.stats-grid--compact {
+  grid-template-columns: repeat(2, 1fr);
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Page actions
+.page-actions {
+  @include flex-start;
+  gap: $spacing-4;
+  padding-top: $spacing-4;
+  border-top: 1px solid $color-gray-100;
+}
+
+// Empty state for cards
+.card__body--empty {
+  @include flex-column-center;
+  padding: $spacing-8;
+  text-align: center;
+  color: $text-secondary;
+
+  p {
+    margin-bottom: $spacing-2;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .text-muted {
+    font-size: $font-size-sm;
+    color: $text-muted;
+  }
+}
+
+// Skeleton loading states
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    $color-gray-100 25%,
+    $color-gray-200 50%,
+    $color-gray-100 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: $radius-md;
+
+  &--text {
+    height: 20px;
+  }
+
+  &--chart {
+    height: 100%;
+    min-height: 250px;
+  }
+
+  &--table {
+    height: 100%;
+    min-height: 250px;
+  }
+
+  &--list {
+    height: 100%;
+    min-height: 150px;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Animate pulse utility
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

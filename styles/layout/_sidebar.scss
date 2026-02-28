@@ -1,0 +1,179 @@
+// =============================================================================
+// SIDEBAR LAYOUT
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $sidebar-width;
+  height: 100vh;
+  background-color: $bg-sidebar;
+  @include flex-column;
+  z-index: $z-fixed;
+
+  @include respond-below('lg') {
+    transform: translateX(-100%);
+    transition: transform $transition-base;
+
+    &.is-open {
+      transform: translateX(0);
+    }
+  }
+
+  &__header {
+    @include flex-start;
+    gap: $spacing-3;
+    padding: $spacing-6;
+    border-bottom: 1px solid rgba($color-white, 0.1);
+  }
+
+  &__logo {
+    width: 40px;
+    height: 40px;
+    background-color: $color-primary;
+    border-radius: $radius-lg;
+    @include flex-center;
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: $color-white;
+    }
+  }
+
+  &__brand {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+  }
+
+  &__nav {
+    flex: 1;
+    padding: $spacing-4;
+    overflow-y: auto;
+    @include custom-scrollbar;
+  }
+
+  &__section {
+    margin-bottom: $spacing-6;
+
+    &-title {
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      color: $color-gray-500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: $spacing-2 $spacing-3;
+      margin-bottom: $spacing-2;
+    }
+  }
+
+  &__link {
+    @include flex-start;
+    gap: $spacing-3;
+    padding: $spacing-3 $spacing-4;
+    border-radius: $radius-lg;
+    color: $color-gray-400;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($color-white, 0.05);
+      color: $color-white;
+    }
+
+    &.is-active {
+      background-color: rgba($color-primary, 0.15);
+      color: $color-primary;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+  }
+
+  &__footer {
+    padding: $spacing-4;
+    border-top: 1px solid rgba($color-white, 0.1);
+  }
+
+  &__user {
+    @include flex-start;
+    gap: $spacing-3;
+    padding: $spacing-3;
+    border-radius: $radius-lg;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: rgba($color-white, 0.05);
+    }
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-full;
+    background-color: $color-gray-600;
+    @include flex-center;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-white;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__user-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__user-name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-white;
+    @include text-truncate;
+  }
+
+  &__user-email {
+    font-size: $font-size-xs;
+    color: $color-gray-500;
+    @include text-truncate;
+  }
+
+  &__theme {
+    @include flex-between;
+    padding: $spacing-3 $spacing-4;
+    margin-bottom: $spacing-2;
+  }
+
+  &__theme-label {
+    font-size: $font-size-sm;
+    color: $color-gray-400;
+  }
+}
+
+// Mobile overlay
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba($color-gray-900, 0.5);
+  z-index: $z-fixed - 1;
+
+  @include respond-below('lg') {
+    &.is-visible {
+      display: block;
+    }
+  }
+}

@@ -1,0 +1,81 @@
+// =============================================================================
+// ACCESSIBILITY STYLES
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// Skip links
+// Visible only when focused for keyboard users
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: $spacing-4;
+  z-index: 9999;
+  padding: $spacing-3 $spacing-4;
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  border-radius: $radius-lg;
+  text-decoration: none;
+  box-shadow: var(--shadow-lg);
+  transition: top $transition-fast;
+
+  &:focus {
+    top: $spacing-4;
+    outline: 2px solid var(--text-inverse);
+    outline-offset: 2px;
+  }
+}
+
+// Focus visible styles
+// Enhanced focus indicators for keyboard navigation
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+// Remove default focus for mouse users
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Interactive elements focus states
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: $radius-sm;
+}
+
+// Reduce motion for users who prefer it
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Screen reader only text
+.sr-only {
+  @include visually-hidden;
+}
+
+// Hide visually but maintain accessibility
+.visually-hidden {
+  @include visually-hidden;
+}
+
+// Focus trap indicator
+[aria-modal="true"] {
+  // Trap focus within modals
+}

@@ -1,0 +1,471 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// Auth Models (NextAuth compatible)
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?   // Hashed password for credentials auth
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  baseCurrency  String    @default("GBP") // User's home currency for conversions
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // KYC Status
+  kycStatus      KYCStatus @default(NOT_STARTED)
+  kycSubmittedAt DateTime?
+  kycVerifiedAt  DateTime?
+
+  // Relations
+  accounts        Account[] // NextAuth accounts (OAuth providers - for future use)
+  sessions        Session[]
+  bankConnections BankConnection[]
+  invoices        Invoice[]
+  portfolios      Portfolio[]
+  kycProfile      KYCProfile?
+
+  @@map("users")
+}
+
+enum KYCStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+model KYCProfile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+
+  // Personal Info
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime
+  phone             String
+
+  // Address
+  addressLine1      String
+  addressLine2      String?
+  city              String
+  state             String
+  postalCode        String
+  country           String
+
+  // Investor Accreditation
+  isAccredited      Boolean  @default(false)
+  accreditationType String?  // "INCOME", "NET_WORTH", "PROFESSIONAL"
+  annualIncome      Decimal? @db.Decimal(19, 2)
+  netWorth          Decimal? @db.Decimal(19, 2)
+
+  // Documents (URLs to uploaded files)
+  idDocumentUrl     String?
+  addressProofUrl   String?
+  accreditationUrl  String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("kyc_profiles")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================================
+// Bank Connection Models (TrueLayer)
+// ============================================================================
+
+model BankConnection {
+  id                    String    @id @default(cuid())
+  userId                String
+  provider              String    @default("truelayer") // For future multi-provider support
+  institutionId         String // TrueLayer institution ID
+  institutionName       String // "Monzo", "Starling", etc.
+  accessTokenEncrypted  String    @db.Text // AES-256 encrypted
+  refreshTokenEncrypted String    @db.Text // AES-256 encrypted
+  accessTokenExpiresAt  DateTime
+  consentExpiresAt      DateTime? // TrueLayer consent expiry (typically 90 days)
+  lastSyncedAt          DateTime?
+  syncStatus            SyncStatus @default(PENDING)
+  syncError             String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relations
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccounts BankAccount[]
+
+  @@map("bank_connections")
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCING
+  COMPLETED
+  FAILED
+}
+
+model BankAccount {
+  id               String   @id @default(cuid())
+  bankConnectionId String
+  externalId       String // TrueLayer account ID
+  accountType      String // "TRANSACTION", "SAVINGS", etc.
+  displayName      String // User-friendly name
+  currency         String // ISO 4217 currency code
+  accountNumber    String? // Last 4 digits only
+  sortCode         String? // UK sort code
+  iban             String? // For EU accounts
+  balance          Decimal? @db.Decimal(19, 4)
+  balanceUpdatedAt DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  bankConnection BankConnection @relation(fields: [bankConnectionId], references: [id], onDelete: Cascade)
+  transactions   Transaction[]
+
+  @@unique([bankConnectionId, externalId])
+  @@map("bank_accounts")
+}
+
+// ============================================================================
+// Transaction Models
+// ============================================================================
+
+model Transaction {
+  id                    String    @id @default(cuid())
+  bankAccountId         String
+  externalId            String // TrueLayer transaction ID
+
+  // Raw data from TrueLayer
+  amount                Decimal   @db.Decimal(19, 4) // Original amount (can be negative for debits)
+  currency              String // Original currency
+  transactionDate       DateTime // When the transaction occurred
+  settlementDate        DateTime? // When it settled
+  description           String // Raw merchant description
+  transactionType       String // "DEBIT", "CREDIT", etc.
+  transactionCategory   String? // TrueLayer's category
+  merchantName          String? // TrueLayer's merchant name if available
+
+  // Enrichment data (populated by background jobs)
+  normalisedMerchant    String? // AI-cleaned merchant name ("AMZN MKTP GB" -> "Amazon")
+  categoryId            String?
+
+  // FX enrichment (for foreign currency transactions)
+  amountInBase          Decimal?  @db.Decimal(19, 4) // Amount in user's base currency
+  midMarketRate         Decimal?  @db.Decimal(19, 8) // Mid-market rate on transaction date
+  bankRate              Decimal?  @db.Decimal(19, 8) // Rate the bank actually charged
+  estimatedFxFee        Decimal?  @db.Decimal(19, 4) // Difference in base currency
+  estimatedFxFeePercent Decimal?  @db.Decimal(5, 4) // Percentage markup
+  wiseRate              Decimal?  @db.Decimal(19, 8) // What Wise would have charged
+  wiseSavings           Decimal?  @db.Decimal(19, 4) // Potential savings with Wise
+
+  // Transfer detection
+  isInternalTransfer    Boolean   @default(false)
+  linkedTransactionId   String?   @unique // Points to counterpart transaction
+
+  // Metadata
+  enrichedAt            DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relations
+  bankAccount        BankAccount       @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  category           Category?         @relation(fields: [categoryId], references: [id])
+  linkedTransaction  Transaction?      @relation("LinkedTransactions", fields: [linkedTransactionId], references: [id])
+  linkedFrom         Transaction?      @relation("LinkedTransactions")
+  invoicePayments    InvoicePayment[]
+
+  @@unique([bankAccountId, externalId])
+  @@index([transactionDate])
+  @@index([bankAccountId, transactionDate])
+  @@map("transactions")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique // "Shopping", "Travel", "Food & Drink", etc.
+  icon      String? // Emoji or icon identifier
+  color     String? // Hex color for UI
+  createdAt DateTime @default(now())
+
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+// ============================================================================
+// Invoice Models
+// ============================================================================
+
+model Invoice {
+  id           String        @id @default(cuid())
+  userId       String
+  clientName   String
+  description  String?
+  amount       Decimal       @db.Decimal(19, 4)
+  currency     String // Invoice currency
+  amountInBase Decimal       @db.Decimal(19, 4) // Converted to user's base currency
+  issuedAt     DateTime
+  dueAt        DateTime
+  status       InvoiceStatus @default(UNPAID)
+  paidAt       DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments InvoicePayment[]
+
+  @@index([userId, status])
+  @@map("invoices")
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+}
+
+model InvoicePayment {
+  id            String      @id @default(cuid())
+  invoiceId     String
+  transactionId String
+  amount        Decimal     @db.Decimal(19, 4) // Amount of this payment
+  matchType     MatchType // How the match was determined
+  confirmedAt   DateTime? // When the user confirmed (null for auto-confirmed)
+  createdAt     DateTime    @default(now())
+
+  // Relations
+  invoice     Invoice     @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@unique([invoiceId, transactionId])
+  @@map("invoice_payments")
+}
+
+enum MatchType {
+  EXACT_AMOUNT // Auto-confirmed
+  FUZZY_AMOUNT // Within 5%, user confirmed
+  MANUAL       // User manually linked
+}
+
+// ============================================================================
+// Exchange Rate Cache
+// ============================================================================
+
+model ExchangeRate {
+  id           String   @id @default(cuid())
+  baseCurrency String // e.g., "USD"
+  date         DateTime @db.Date // Rate date
+  rates        Json // { "GBP": 0.79, "EUR": 0.92, ... }
+  source       String   @default("openexchangerates")
+  fetchedAt    DateTime @default(now())
+
+  @@unique([baseCurrency, date, source])
+  @@index([date])
+  @@map("exchange_rates")
+}
+
+// ============================================================================
+// AI Insights
+// ============================================================================
+
+model MonthlyInsight {
+  id        String   @id @default(cuid())
+  userId    String
+  month     DateTime @db.Date // First day of month
+  summary   String   @db.Text // AI-generated plain English summary
+  data      Json // Structured data for the summary (spending by category, etc.)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, month])
+  @@map("monthly_insights")
+}
+
+// ============================================================================
+// Investment Portfolio Models (Cardone Capital-style)
+// ============================================================================
+
+model Portfolio {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String // "My Real Estate Portfolio", "Retirement Fund"
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  investments Investment[]
+
+  @@index([userId])
+  @@map("portfolios")
+}
+
+model Property {
+  id              String         @id @default(cuid())
+  name            String // "10X Growth Fund", "Cardone Equity Fund IX"
+  propertyType    PropertyType
+  location        String // "Miami, FL" or "Multi-State"
+  description     String?        @db.Text
+  imageUrl        String?
+  targetReturn    Decimal?       @db.Decimal(5, 2) // Target annual return (e.g., 15.00%)
+  totalRaised     Decimal?       @db.Decimal(19, 2) // Total capital raised
+  totalUnits      Int? // Number of units/doors for real estate
+  acquisitionDate DateTime?
+  status          PropertyStatus @default(ACTIVE)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  investments Investment[]
+
+  @@map("properties")
+}
+
+enum PropertyType {
+  MULTIFAMILY // Apartment complexes
+  COMMERCIAL  // Office/retail
+  MIXED_USE   // Combined residential/commercial
+  INDUSTRIAL  // Warehouses/logistics
+  FUND        // Investment fund (multiple properties)
+}
+
+enum PropertyStatus {
+  RAISING      // Currently raising capital
+  ACTIVE       // Deployed and operating
+  DISTRIBUTING // Mature, distributing profits
+  SOLD         // Exited/sold
+}
+
+model Investment {
+  id             String           @id @default(cuid())
+  portfolioId    String
+  propertyId     String
+  investedAmount Decimal          @db.Decimal(19, 2) // Principal invested
+  currentValue   Decimal          @db.Decimal(19, 2) // Current estimated value
+  shareCount     Decimal?         @db.Decimal(19, 6) // Number of shares/units owned
+  investmentDate DateTime
+  status         InvestmentStatus @default(ACTIVE)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  // Relations
+  portfolio     Portfolio      @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  property      Property       @relation(fields: [propertyId], references: [id])
+  distributions Distribution[]
+  valuations    Valuation[]
+
+  @@index([portfolioId])
+  @@index([propertyId])
+  @@map("investments")
+}
+
+enum InvestmentStatus {
+  PENDING // Investment submitted, not yet confirmed
+  ACTIVE  // Currently invested
+  EXITED  // Position closed/sold
+}
+
+model Distribution {
+  id               String             @id @default(cuid())
+  investmentId     String
+  amount           Decimal            @db.Decimal(19, 2)
+  distributionType DistributionType
+  distributionDate DateTime
+  status           DistributionStatus @default(PENDING)
+  description      String?
+  createdAt        DateTime           @default(now())
+
+  // Relations
+  investment Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+
+  @@index([investmentId])
+  @@index([distributionDate])
+  @@map("distributions")
+}
+
+enum DistributionType {
+  DIVIDEND         // Regular cash distribution
+  PREFERRED_RETURN // Preferred return payment
+  CAPITAL_RETURN   // Return of principal
+  SPECIAL          // Special/one-time distribution
+}
+
+enum DistributionStatus {
+  PENDING    // Scheduled but not paid
+  PROCESSING // Being processed
+  PAID       // Successfully paid out
+}
+
+model Valuation {
+  id            String   @id @default(cuid())
+  investmentId  String
+  value         Decimal  @db.Decimal(19, 2)
+  valuationDate DateTime
+  source        String   @default("quarterly_report") // "quarterly_report", "manual", "exit"
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  // Relations
+  investment Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+
+  @@index([investmentId, valuationDate])
+  @@map("valuations")
+}

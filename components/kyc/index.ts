@@ -1,0 +1,7 @@
+export { KYCWizard } from "./kyc-wizard"
+export { KYCProgress } from "./kyc-progress"
+export { KYCStatusBadge } from "./kyc-status-badge"
+export { PersonalInfoStep } from "./personal-info-step"
+export { AddressStep } from "./address-step"
+export { AccreditationStep } from "./accreditation-step"
+export { DocumentsStep } from "./documents-step"

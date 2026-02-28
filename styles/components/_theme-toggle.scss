@@ -1,0 +1,46 @@
+// =============================================================================
+// THEME TOGGLE
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.theme-toggle {
+  display: inline-flex;
+  background-color: var(--gray-100);
+  border-radius: $radius-lg;
+  padding: $spacing-1;
+  gap: $spacing-1;
+
+  &__btn {
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: $radius-md;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      color: var(--text-secondary);
+      background-color: var(--gray-200);
+    }
+
+    &--active {
+      background-color: var(--bg-card);
+      color: var(--color-primary);
+      box-shadow: var(--shadow-sm);
+
+      &:hover {
+        background-color: var(--bg-card);
+        color: var(--color-primary);
+      }
+    }
+  }
+}

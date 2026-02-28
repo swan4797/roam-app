@@ -1,0 +1,491 @@
+// =============================================================================
+// KYC VERIFICATION
+// =============================================================================
+
+@use 'sass:color';
+@use '../abstracts' as *;
+
+// KYC Wizard
+.kyc-wizard {
+  max-width: 720px;
+  margin: 0 auto;
+
+  &__content {
+    margin-top: $spacing-8;
+    margin-bottom: $spacing-8;
+  }
+
+  &__actions {
+    @include flex-between;
+    padding-top: $spacing-6;
+    border-top: 1px solid $color-gray-200;
+  }
+}
+
+// KYC Progress
+.kyc-progress {
+  padding: $spacing-4 0;
+
+  &__track {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  &__step-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+
+    &:first-child {
+      align-items: flex-start;
+    }
+
+    &:last-child {
+      align-items: flex-end;
+    }
+  }
+
+  &__connector {
+    position: absolute;
+    top: 16px;
+    right: 50%;
+    width: 100%;
+    height: 2px;
+    background-color: $color-gray-200;
+    z-index: 0;
+
+    &--active {
+      background-color: $color-primary;
+    }
+  }
+
+  &__step {
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    background-color: $color-white;
+    border: 2px solid $color-gray-300;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-muted;
+    z-index: 1;
+    transition: all $transition-fast;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &--active {
+      border-color: $color-primary;
+      background-color: $color-primary;
+      color: $color-white;
+    }
+
+    &--completed {
+      border-color: $color-primary;
+      background-color: $color-primary;
+      color: $color-white;
+    }
+  }
+
+  &__label {
+    margin-top: $spacing-2;
+    font-size: $font-size-xs;
+    color: $text-muted;
+    white-space: nowrap;
+
+    &--active {
+      color: $text-primary;
+      font-weight: $font-weight-medium;
+    }
+  }
+}
+
+// KYC Step
+.kyc-step {
+  &__header {
+    margin-bottom: $spacing-6;
+  }
+
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-2;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    line-height: 1.5;
+  }
+
+  &__info-box {
+    display: flex;
+    gap: $spacing-3;
+    padding: $spacing-4;
+    background-color: $color-gray-50;
+    border-radius: $radius-lg;
+    margin-top: $spacing-6;
+
+    &--secure {
+      background-color: rgba($color-success, 0.1);
+    }
+  }
+
+  &__info-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: $color-primary;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__info-box--secure &__info-icon {
+    color: $color-success;
+  }
+
+  &__info-content {
+    font-size: $font-size-sm;
+
+    strong {
+      display: block;
+      color: $text-primary;
+      margin-bottom: $spacing-1;
+    }
+
+    p {
+      color: $text-secondary;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+// Radio Card
+.radio-card {
+  cursor: pointer;
+  display: block;
+
+  input[type="radio"] {
+    @include visually-hidden;
+  }
+
+  &__content {
+    display: flex;
+    gap: $spacing-3;
+    padding: $spacing-4;
+    border: 2px solid $color-gray-200;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+  }
+
+  input:checked + &__content {
+    border-color: $color-primary;
+    background-color: rgba($color-primary, 0.05);
+  }
+
+  input:focus-visible + &__content {
+    box-shadow: 0 0 0 2px $color-white, 0 0 0 4px $color-primary;
+  }
+
+  &:hover &__content {
+    border-color: $color-primary;
+  }
+
+  &__indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: $radius-full;
+    border: 2px solid $color-gray-300;
+    flex-shrink: 0;
+    position: relative;
+    transition: all $transition-fast;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 10px;
+      height: 10px;
+      border-radius: $radius-full;
+      background-color: $color-primary;
+      transition: transform $transition-fast;
+    }
+  }
+
+  input:checked + &__content &__indicator {
+    border-color: $color-primary;
+
+    &::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+  }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+  }
+
+  &__description {
+    font-size: $font-size-xs;
+    color: $text-muted;
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+// File Upload
+.file-upload {
+  position: relative;
+  border: 2px dashed $color-gray-300;
+  border-radius: $radius-lg;
+  padding: $spacing-8;
+  text-align: center;
+  transition: all $transition-fast;
+  cursor: pointer;
+
+  &:hover,
+  &--dragging {
+    border-color: $color-primary;
+    background-color: rgba($color-primary, 0.05);
+  }
+
+  &--error {
+    border-color: $color-error;
+  }
+
+  &__input {
+    @include visually-hidden;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto $spacing-3;
+    color: $color-gray-400;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+  }
+
+  &__primary {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+
+  &__link {
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__secondary {
+    font-size: $font-size-xs;
+    color: $text-muted;
+  }
+}
+
+// File Preview
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3;
+  background-color: $color-gray-50;
+  border-radius: $radius-lg;
+  border: 1px solid $color-gray-200;
+
+  &__icon {
+    @include flex-center;
+    width: 40px;
+    height: 40px;
+    background-color: $color-primary;
+    border-radius: $radius-md;
+    color: $color-white;
+    flex-shrink: 0;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__status {
+    font-size: $font-size-xs;
+    color: $color-success;
+  }
+
+  &__remove {
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-md;
+    background: transparent;
+    border: none;
+    color: $text-muted;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($color-error, 0.1);
+      color: $color-error;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// KYC Badge
+.kyc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &__icon {
+    width: 14px;
+    height: 14px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &--neutral {
+    background-color: $color-gray-100;
+    color: $text-secondary;
+  }
+
+  &--info {
+    background-color: rgba($color-info, 0.1);
+    color: $color-info;
+  }
+
+  &--warning {
+    background-color: rgba($color-warning, 0.1);
+    color: color.adjust($color-warning, $lightness: -10%);
+  }
+
+  &--success {
+    background-color: rgba($color-success, 0.1);
+    color: $color-success;
+  }
+
+  &--error {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+  }
+}
+
+// KYC Status States
+.kyc-verified,
+.kyc-pending,
+.kyc-rejected {
+  @include flex-column;
+  align-items: center;
+  text-align: center;
+  padding: $spacing-12;
+  background-color: $color-white;
+  border-radius: $radius-xl;
+  border: 1px solid $color-gray-200;
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: $spacing-4;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-2;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    max-width: 400px;
+    line-height: 1.5;
+  }
+}
+
+.kyc-verified {
+  &__icon {
+    color: $color-success;
+  }
+}
+
+.kyc-pending {
+  &__icon {
+    color: $color-warning;
+  }
+}
+
+.kyc-rejected {
+  &__icon {
+    color: $color-error;
+  }
+}
