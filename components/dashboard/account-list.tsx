@@ -1,6 +1,7 @@
 "use client"
 
-import { deleteBankConnectionAction } from "@/actions/bank-connections"
+import { useState } from "react"
+import { deleteBankConnectionAction, syncTransactionsAction } from "@/actions/bank-connections"
 import type { SyncStatus } from "@/generated/prisma/client"
 
 interface BankConnection {
@@ -27,6 +28,21 @@ interface Props {
 }
 
 export function AccountList({ connections }: Props) {
+  const [syncingId, setSyncingId] = useState<string | null>(null)
+  const [syncResult, setSyncResult] = useState<{ id: string; success: boolean; message: string } | null>(null)
+
+  const handleSync = async (connectionId: string) => {
+    setSyncingId(connectionId)
+    setSyncResult(null)
+
+    const formData = new FormData()
+    formData.set("connectionId", connectionId)
+
+    const result = await syncTransactionsAction(formData)
+    setSyncResult({ id: connectionId, ...result })
+    setSyncingId(null)
+  }
+
   const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
@@ -110,16 +126,42 @@ export function AccountList({ connections }: Props) {
                 </div>
               </div>
             </div>
-            <form action={deleteBankConnectionAction}>
-              <input type="hidden" name="id" value={connection.id} />
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <button
-                type="submit"
-                className="btn btn--ghost btn--sm"
-                style={{ color: "#EF4444" }}
+                type="button"
+                className="btn btn--secondary btn--sm"
+                onClick={() => handleSync(connection.id)}
+                disabled={syncingId === connection.id}
               >
-                Disconnect
+                {syncingId === connection.id ? (
+                  <>
+                    <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                    </svg>
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="23 4 23 10 17 10" />
+                      <polyline points="1 20 1 14 7 14" />
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                    </svg>
+                    Sync
+                  </>
+                )}
               </button>
-            </form>
+              <form action={deleteBankConnectionAction}>
+                <input type="hidden" name="id" value={connection.id} />
+                <button
+                  type="submit"
+                  className="btn btn--ghost btn--sm"
+                  style={{ color: "#EF4444" }}
+                >
+                  Disconnect
+                </button>
+              </form>
+            </div>
           </div>
 
           <div className="card__body">
@@ -145,7 +187,26 @@ export function AccountList({ connections }: Props) {
             </div>
           </div>
 
-          {connection.syncError && (
+          {syncResult?.id === connection.id && (
+            <div className="card__footer" style={{ paddingTop: "1rem" }}>
+              <div className={`alert ${syncResult.success ? "alert--success" : "alert--error"}`}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  {syncResult.success ? (
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4 12 14.01l-3-3" />
+                  ) : (
+                    <>
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </>
+                  )}
+                </svg>
+                <span>{syncResult.message}</span>
+              </div>
+            </div>
+          )}
+
+          {connection.syncError && !syncResult && (
             <div className="card__footer">
               <div style={{
                 padding: "0.75rem",

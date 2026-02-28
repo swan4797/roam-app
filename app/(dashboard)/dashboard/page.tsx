@@ -1,42 +1,82 @@
 import { getUserDashboardStats } from "@/lib/dal/user"
-import { getSpendingByCategory, getTotalFxFees, getFxTransactions } from "@/lib/dal/transactions"
-import { getUnpaidInvoicesTotal } from "@/lib/dal/invoices"
-import { DashboardOverview } from "@/components/dashboard/dashboard-overview"
+import {
+  getSpendingByCategory,
+  getFxTransactions,
+  getWeeklyFxFees,
+  getCurrencyBreakdown,
+  getFxStats,
+} from "@/lib/dal/transactions"
+import { FxHeroCard } from "@/components/dashboard/fx-hero-card"
+import { FxAlerts } from "@/components/dashboard/fx-alerts"
+import { CurrencyOverview } from "@/components/dashboard/currency-overview"
 import { SpendingByCategory } from "@/components/dashboard/spending-by-category"
 import { FxFeeSummary } from "@/components/dashboard/fx-fee-summary"
-import { InvoiceSummary } from "@/components/dashboard/invoice-summary"
 
 export default async function DashboardPage() {
   // Parallel data fetching - all DAL calls run concurrently
-  const [stats, spendingByCategory, fxTotals, topFxTransactions, unpaidInvoices] =
+  const [stats, fxStats, weeklyFx, currencies, spendingByCategory, topFxTransactions] =
     await Promise.all([
       getUserDashboardStats(),
+      getFxStats(),
+      getWeeklyFxFees(),
+      getCurrencyBreakdown(),
       getSpendingByCategory(),
-      getTotalFxFees(),
       getFxTransactions({ limit: 5 }),
-      getUnpaidInvoicesTotal(),
     ])
 
+  // Find top merchant by FX fees
+  const topMerchant = topFxTransactions[0]
+    ? {
+        name: topFxTransactions[0].normalisedMerchant ?? topFxTransactions[0].merchantName ?? "Unknown",
+        fees: topFxTransactions[0].estimatedFxFee ?? 0,
+      }
+    : undefined
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Your financial overview for the last 30 days
-        </p>
+    <div className="page-content">
+      <div className="page-title-row">
+        <div>
+          <h1 className="page-title">FX Fee Tracker</h1>
+          <p className="page-subtitle">
+            See how much you&apos;re paying in hidden foreign exchange fees
+          </p>
+        </div>
       </div>
 
-      <DashboardOverview stats={stats} />
+      {/* FX Alerts - show warnings and tips */}
+      <FxAlerts
+        weeklyFees={weeklyFx.weeklyFees}
+        topMerchant={topMerchant}
+      />
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <SpendingByCategory data={spendingByCategory} />
-        <FxFeeSummary
-          totals={fxTotals}
-          topTransactions={topFxTransactions}
+      {/* Hero FX Card - prominent fee display */}
+      <div style={{ marginTop: "1.5rem" }}>
+        <FxHeroCard
+          totalFxFees={fxStats.totalFxFees}
+          wiseSavings={fxStats.wiseSavings}
+          transactionCount={fxStats.transactionCount}
+          topCurrency={fxStats.topCurrency}
+          weeklyFees={weeklyFx.weeklyFees}
+          monthlyChange={fxStats.monthlyChange}
         />
       </div>
 
-      <InvoiceSummary unpaidTotal={unpaidInvoices} />
+      {/* Multi-currency overview */}
+      <div style={{ marginTop: "2rem" }}>
+        <CurrencyOverview
+          currencies={currencies}
+          baseCurrency={stats.baseCurrency ?? "GBP"}
+        />
+      </div>
+
+      {/* Two column layout for spending and top FX transactions */}
+      <div className="grid gap-8 lg:grid-cols-2" style={{ marginTop: "2rem" }}>
+        <SpendingByCategory data={spendingByCategory} />
+        <FxFeeSummary
+          totals={{ totalFxFees: fxStats.totalFxFees, totalWiseSavings: fxStats.wiseSavings }}
+          topTransactions={topFxTransactions}
+        />
+      </div>
     </div>
   )
 }

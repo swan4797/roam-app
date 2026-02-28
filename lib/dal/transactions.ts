@@ -276,3 +276,158 @@ export async function updateTransactionCategory(
     data: { categoryId },
   })
 }
+
+export async function getWeeklyFxFees() {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) throw new Error("Unauthorised")
+
+  const oneWeekAgo = new Date()
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+
+  const result = await prisma.transaction.aggregate({
+    where: {
+      bankAccount: {
+        bankConnection: { userId: session.user.id },
+      },
+      estimatedFxFee: { not: null },
+      isInternalTransfer: false,
+      transactionDate: { gte: oneWeekAgo },
+    },
+    _sum: {
+      estimatedFxFee: true,
+    },
+    _count: true,
+  })
+
+  return {
+    weeklyFees: result._sum.estimatedFxFee?.toNumber() ?? 0,
+    transactionCount: result._count,
+  }
+}
+
+export async function getCurrencyBreakdown() {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) throw new Error("Unauthorised")
+
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+  // Get spending by currency
+  const spending = await prisma.transaction.groupBy({
+    by: ["currency"],
+    where: {
+      bankAccount: {
+        bankConnection: { userId: session.user.id },
+      },
+      isInternalTransfer: false,
+      transactionDate: { gte: thirtyDaysAgo },
+    },
+    _sum: {
+      amount: true,
+      estimatedFxFee: true,
+    },
+    _count: true,
+  })
+
+  // Get account counts by currency
+  const accounts = await prisma.bankAccount.groupBy({
+    by: ["currency"],
+    where: {
+      bankConnection: { userId: session.user.id },
+    },
+    _count: true,
+    _sum: {
+      balance: true,
+    },
+  })
+
+  const accountMap = new Map(accounts.map(a => [a.currency, a]))
+
+  return spending.map(s => ({
+    currency: s.currency,
+    monthlySpending: s._sum.amount?.toNumber() ?? 0,
+    fxFees: s._sum.estimatedFxFee?.toNumber() ?? 0,
+    transactionCount: s._count,
+    accountCount: accountMap.get(s.currency)?._count ?? 0,
+    balance: accountMap.get(s.currency)?._sum.balance?.toNumber() ?? 0,
+  }))
+}
+
+export async function getFxStats() {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) throw new Error("Unauthorised")
+
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+  const sixtyDaysAgo = new Date()
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60)
+
+  // This month's fees
+  const thisMonth = await prisma.transaction.aggregate({
+    where: {
+      bankAccount: {
+        bankConnection: { userId: session.user.id },
+      },
+      estimatedFxFee: { not: null },
+      isInternalTransfer: false,
+      transactionDate: { gte: thirtyDaysAgo },
+    },
+    _sum: {
+      estimatedFxFee: true,
+      wiseSavings: true,
+    },
+    _count: true,
+  })
+
+  // Last month's fees (for comparison)
+  const lastMonth = await prisma.transaction.aggregate({
+    where: {
+      bankAccount: {
+        bankConnection: { userId: session.user.id },
+      },
+      estimatedFxFee: { not: null },
+      isInternalTransfer: false,
+      transactionDate: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+    },
+    _sum: {
+      estimatedFxFee: true,
+    },
+  })
+
+  // Top currency
+  const topCurrency = await prisma.transaction.groupBy({
+    by: ["currency"],
+    where: {
+      bankAccount: {
+        bankConnection: { userId: session.user.id },
+      },
+      isInternalTransfer: false,
+      transactionDate: { gte: thirtyDaysAgo },
+      currency: { not: "GBP" },
+    },
+    _sum: {
+      amount: true,
+    },
+    orderBy: {
+      _sum: {
+        amount: "asc", // Most negative = most spending
+      },
+    },
+    take: 1,
+  })
+
+  const thisMonthFees = thisMonth._sum.estimatedFxFee?.toNumber() ?? 0
+  const lastMonthFees = lastMonth._sum.estimatedFxFee?.toNumber() ?? 0
+  const monthlyChange = lastMonthFees > 0
+    ? Math.round(((thisMonthFees - lastMonthFees) / lastMonthFees) * 100)
+    : 0
+
+  return {
+    totalFxFees: thisMonthFees,
+    wiseSavings: thisMonth._sum.wiseSavings?.toNumber() ?? 0,
+    transactionCount: thisMonth._count,
+    topCurrency: topCurrency[0]?.currency ?? "EUR",
+    monthlyChange,
+  }
+}

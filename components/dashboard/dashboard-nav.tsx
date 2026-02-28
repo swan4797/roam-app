@@ -16,14 +16,13 @@ interface Props {
 }
 
 const navItems = [
-  { href: "/dashboard", label: "Overview", icon: "home" },
-  { href: "/dashboard/portfolio", label: "Portfolio", icon: "briefcase" },
-  { href: "/dashboard/calculator", label: "Calculator", icon: "calculator" },
-  { href: "/dashboard/transactions", label: "Transactions", icon: "list" },
+  { href: "/dashboard", label: "FX Tracker", icon: "home" },
   { href: "/dashboard/fx-analysis", label: "FX Analysis", icon: "trending" },
+  { href: "/dashboard/transactions", label: "Transactions", icon: "list" },
+  { href: "/dashboard/accounts", label: "Bank Accounts", icon: "wallet" },
+  { href: "/dashboard/calculator", label: "Calculator", icon: "calculator" },
+  { href: "/dashboard/portfolio", label: "Portfolio", icon: "briefcase" },
   { href: "/dashboard/invoices", label: "Invoices", icon: "file" },
-  { href: "/dashboard/accounts", label: "Accounts", icon: "wallet" },
-  { href: "/dashboard/verify", label: "Verify", icon: "shield" },
 ]
 
 export function DashboardNav({ user }: Props) {

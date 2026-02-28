@@ -1,0 +1,500 @@
+// =============================================================================
+// FX COMPONENTS - Digital Nomad FX Fee Tracking
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// =============================================================================
+// FX HERO CARD - Prominent FX fees display
+// =============================================================================
+
+.fx-hero {
+  @include card-dark;
+  padding: $spacing-8;
+
+  @include respond-below('md') {
+    padding: $spacing-6;
+  }
+
+  &__main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $spacing-8;
+    margin-bottom: $spacing-8;
+
+    @include respond-below('md') {
+      flex-direction: column;
+    }
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__label {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: $spacing-3;
+  }
+
+  &__value {
+    font-size: $font-size-5xl;
+    font-weight: $font-weight-bold;
+    color: var(--color-error);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+
+    @include respond-below('md') {
+      font-size: $font-size-4xl;
+    }
+  }
+
+  &__subtitle {
+    font-size: $font-size-base;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: $spacing-2;
+  }
+
+  &__change {
+    @include flex-start;
+    gap: $spacing-2;
+    margin-top: $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &--positive {
+      color: var(--color-success);
+    }
+
+    &--negative {
+      color: var(--color-error);
+    }
+  }
+
+  &__visual {
+    flex-shrink: 0;
+
+    @include respond-below('md') {
+      display: none;
+    }
+  }
+
+  &__chart {
+    width: 120px;
+    height: 120px;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-4;
+    padding: $spacing-6;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: $radius-xl;
+    margin-bottom: $spacing-6;
+
+    @include respond-below('sm') {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__stat {
+    text-align: center;
+    padding: $spacing-2;
+
+    &--highlight {
+      background-color: rgba($color-success, 0.1);
+      border-radius: $radius-lg;
+      padding: $spacing-4;
+    }
+  }
+
+  &__stat-label {
+    display: block;
+    font-size: $font-size-xs;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: $spacing-1;
+  }
+
+  &__stat-value {
+    display: block;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+  }
+
+  &__stat-badge {
+    display: inline-block;
+    font-size: $font-size-xs;
+    color: var(--color-success);
+    margin-top: $spacing-1;
+  }
+
+  &__actions {
+    @include flex-start;
+    gap: $spacing-3;
+
+    @include respond-below('sm') {
+      flex-direction: column;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// FX ALERTS
+// =============================================================================
+
+.fx-alerts {
+  @include flex-column;
+  gap: $spacing-3;
+}
+
+.fx-alert {
+  @include flex-start;
+  gap: $spacing-4;
+  padding: $spacing-4 $spacing-5;
+  border-radius: $radius-xl;
+  position: relative;
+
+  &--warning {
+    background-color: rgba($color-warning, 0.1);
+    border: 1px solid rgba($color-warning, 0.2);
+
+    .fx-alert__icon {
+      color: $color-warning;
+    }
+  }
+
+  &--tip {
+    background-color: rgba($color-info, 0.1);
+    border: 1px solid rgba($color-info, 0.2);
+
+    .fx-alert__icon {
+      color: $color-info;
+    }
+  }
+
+  &--insight {
+    background-color: rgba($color-primary, 0.1);
+    border: 1px solid rgba($color-primary, 0.2);
+
+    .fx-alert__icon {
+      color: $color-primary;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    margin: 0 0 $spacing-1;
+  }
+
+  &__message {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  &__action {
+    display: inline-block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--color-primary);
+    margin-top: $spacing-2;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__dismiss {
+    position: absolute;
+    top: $spacing-3;
+    right: $spacing-3;
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: $radius-sm;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--text-secondary);
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+// =============================================================================
+// CURRENCY OVERVIEW
+// =============================================================================
+
+.currency-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+}
+
+.currency-card {
+  padding: $spacing-4;
+  background-color: var(--surface-1);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-xl;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+  }
+
+  &__header {
+    @include flex-start;
+    gap: $spacing-3;
+    margin-bottom: $spacing-3;
+  }
+
+  &__flag {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  &__info {
+    @include flex-column;
+    gap: 0;
+  }
+
+  &__code {
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+  }
+
+  &__name {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+  }
+
+  &__spending {
+    margin-bottom: $spacing-3;
+  }
+
+  &__amount {
+    display: block;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+  }
+
+  &__bar {
+    height: 4px;
+    background-color: var(--surface-2);
+    border-radius: $radius-full;
+    overflow: hidden;
+    margin-bottom: $spacing-3;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: $radius-full;
+    transition: width $transition-slow;
+  }
+
+  &__fees {
+    @include flex-start;
+    gap: $spacing-1;
+    font-size: $font-size-xs;
+    color: var(--color-error);
+    font-weight: $font-weight-medium;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
+.currency-summary {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing-4;
+  background-color: var(--surface-2);
+  border-radius: $radius-xl;
+
+  @include respond-below('sm') {
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__item {
+    text-align: center;
+    padding: 0 $spacing-4;
+
+    @include respond-below('sm') {
+      @include flex-between;
+      text-align: left;
+      padding: 0;
+    }
+
+    &--highlight {
+      .currency-summary__value {
+        color: var(--color-error);
+      }
+    }
+  }
+
+  &__label {
+    display: block;
+    font-size: $font-size-xs;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: $spacing-1;
+
+    @include respond-below('sm') {
+      margin-bottom: 0;
+    }
+  }
+
+  &__value {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+  }
+}
+
+// =============================================================================
+// FX PROVIDER COMPARISON
+// =============================================================================
+
+.provider-comparison {
+  @include flex-column;
+  gap: $spacing-4;
+}
+
+.provider-card {
+  @include flex-between;
+  padding: $spacing-4 $spacing-5;
+  background-color: var(--surface-1);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-xl;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: var(--border-color);
+  }
+
+  &--recommended {
+    border-color: var(--color-success);
+    background-color: rgba($color-success, 0.02);
+  }
+
+  &__left {
+    @include flex-start;
+    gap: $spacing-4;
+  }
+
+  &__logo {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-lg;
+    @include flex-center;
+    background-color: var(--surface-2);
+    font-weight: $font-weight-bold;
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+  }
+
+  &__info {
+    @include flex-column;
+    gap: $spacing-1;
+  }
+
+  &__name {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+  }
+
+  &__rate {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+  }
+
+  &__right {
+    text-align: right;
+  }
+
+  &__fee {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+  }
+
+  &__savings {
+    font-size: $font-size-sm;
+    color: var(--color-success);
+    font-weight: $font-weight-medium;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: $spacing-1 $spacing-2;
+    background-color: var(--color-success);
+    color: white;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-full;
+    margin-left: $spacing-2;
+  }
+}

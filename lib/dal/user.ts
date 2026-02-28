@@ -56,12 +56,17 @@ export async function getUserDashboardStats() {
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
   const [
+    user,
     accountCount,
     transactionCount,
     totalSpent,
     totalFxFees,
     unpaidInvoices,
   ] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { baseCurrency: true },
+    }),
     prisma.bankAccount.count({
       where: {
         bankConnection: { userId: session.user.id },
@@ -109,6 +114,7 @@ export async function getUserDashboardStats() {
   ])
 
   return {
+    baseCurrency: user?.baseCurrency ?? "GBP",
     connectedAccounts: accountCount,
     transactionsThisMonth: transactionCount,
     totalSpentThisMonth: Math.abs(totalSpent._sum.amountInBase?.toNumber() ?? 0),
