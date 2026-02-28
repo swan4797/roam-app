@@ -50,7 +50,6 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 export const ModelName = {
   User: 'User',
-  KYCProfile: 'KYCProfile',
   Account: 'Account',
   Session: 'Session',
   VerificationToken: 'VerificationToken',
@@ -62,11 +61,11 @@ export const ModelName = {
   InvoicePayment: 'InvoicePayment',
   ExchangeRate: 'ExchangeRate',
   MonthlyInsight: 'MonthlyInsight',
-  Portfolio: 'Portfolio',
-  Property: 'Property',
-  Investment: 'Investment',
-  Distribution: 'Distribution',
-  Valuation: 'Valuation'
+  ExpenseGroup: 'ExpenseGroup',
+  GroupMember: 'GroupMember',
+  GroupExpense: 'GroupExpense',
+  ExpenseSplit: 'ExpenseSplit',
+  GroupSettlement: 'GroupSettlement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -94,40 +93,10 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   baseCurrency: 'baseCurrency',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  kycStatus: 'kycStatus',
-  kycSubmittedAt: 'kycSubmittedAt',
-  kycVerifiedAt: 'kycVerifiedAt'
-} as const
-
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
-
-
-export const KYCProfileScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  dateOfBirth: 'dateOfBirth',
-  phone: 'phone',
-  addressLine1: 'addressLine1',
-  addressLine2: 'addressLine2',
-  city: 'city',
-  state: 'state',
-  postalCode: 'postalCode',
-  country: 'country',
-  isAccredited: 'isAccredited',
-  accreditationType: 'accreditationType',
-  annualIncome: 'annualIncome',
-  netWorth: 'netWorth',
-  idDocumentUrl: 'idDocumentUrl',
-  addressProofUrl: 'addressProofUrl',
-  accreditationUrl: 'accreditationUrl',
-  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type KYCProfileScalarFieldEnum = (typeof KYCProfileScalarFieldEnum)[keyof typeof KYCProfileScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const AccountScalarFieldEnum = {
@@ -305,78 +274,91 @@ export const MonthlyInsightScalarFieldEnum = {
 export type MonthlyInsightScalarFieldEnum = (typeof MonthlyInsightScalarFieldEnum)[keyof typeof MonthlyInsightScalarFieldEnum]
 
 
-export const PortfolioScalarFieldEnum = {
+export const ExpenseGroupScalarFieldEnum = {
   id: 'id',
+  name: 'name',
+  description: 'description',
+  currency: 'currency',
+  imageUrl: 'imageUrl',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExpenseGroupScalarFieldEnum = (typeof ExpenseGroupScalarFieldEnum)[keyof typeof ExpenseGroupScalarFieldEnum]
+
+
+export const GroupMemberScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
   userId: 'userId',
   name: 'name',
+  email: 'email',
+  createdAt: 'createdAt'
+} as const
+
+export type GroupMemberScalarFieldEnum = (typeof GroupMemberScalarFieldEnum)[keyof typeof GroupMemberScalarFieldEnum]
+
+
+export const GroupExpenseScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  paidById: 'paidById',
   description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PortfolioScalarFieldEnum = (typeof PortfolioScalarFieldEnum)[keyof typeof PortfolioScalarFieldEnum]
-
-
-export const PropertyScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  propertyType: 'propertyType',
-  location: 'location',
-  description: 'description',
-  imageUrl: 'imageUrl',
-  targetReturn: 'targetReturn',
-  totalRaised: 'totalRaised',
-  totalUnits: 'totalUnits',
-  acquisitionDate: 'acquisitionDate',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
-
-
-export const InvestmentScalarFieldEnum = {
-  id: 'id',
-  portfolioId: 'portfolioId',
-  propertyId: 'propertyId',
-  investedAmount: 'investedAmount',
-  currentValue: 'currentValue',
-  shareCount: 'shareCount',
-  investmentDate: 'investmentDate',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type InvestmentScalarFieldEnum = (typeof InvestmentScalarFieldEnum)[keyof typeof InvestmentScalarFieldEnum]
-
-
-export const DistributionScalarFieldEnum = {
-  id: 'id',
-  investmentId: 'investmentId',
   amount: 'amount',
-  distributionType: 'distributionType',
-  distributionDate: 'distributionDate',
-  status: 'status',
-  description: 'description',
-  createdAt: 'createdAt'
-} as const
-
-export type DistributionScalarFieldEnum = (typeof DistributionScalarFieldEnum)[keyof typeof DistributionScalarFieldEnum]
-
-
-export const ValuationScalarFieldEnum = {
-  id: 'id',
-  investmentId: 'investmentId',
-  value: 'value',
-  valuationDate: 'valuationDate',
-  source: 'source',
+  currency: 'currency',
+  category: 'category',
+  expenseDate: 'expenseDate',
+  splitType: 'splitType',
   notes: 'notes',
-  createdAt: 'createdAt'
+  receiptUrl: 'receiptUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  amountInGroupCurrency: 'amountInGroupCurrency',
+  midMarketRate: 'midMarketRate',
+  actualRate: 'actualRate',
+  estimatedFxFee: 'estimatedFxFee'
 } as const
 
-export type ValuationScalarFieldEnum = (typeof ValuationScalarFieldEnum)[keyof typeof ValuationScalarFieldEnum]
+export type GroupExpenseScalarFieldEnum = (typeof GroupExpenseScalarFieldEnum)[keyof typeof GroupExpenseScalarFieldEnum]
+
+
+export const ExpenseSplitScalarFieldEnum = {
+  id: 'id',
+  expenseId: 'expenseId',
+  memberId: 'memberId',
+  amount: 'amount',
+  percentage: 'percentage',
+  shares: 'shares',
+  isPaid: 'isPaid',
+  amountInMemberCurrency: 'amountInMemberCurrency',
+  memberCurrency: 'memberCurrency',
+  fxFeeOnSplit: 'fxFeeOnSplit'
+} as const
+
+export type ExpenseSplitScalarFieldEnum = (typeof ExpenseSplitScalarFieldEnum)[keyof typeof ExpenseSplitScalarFieldEnum]
+
+
+export const GroupSettlementScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  fromMemberId: 'fromMemberId',
+  toMemberId: 'toMemberId',
+  amount: 'amount',
+  currency: 'currency',
+  settlementDate: 'settlementDate',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  amountInGroupCurrency: 'amountInGroupCurrency',
+  midMarketRate: 'midMarketRate',
+  actualRate: 'actualRate',
+  estimatedFxFee: 'estimatedFxFee',
+  wiseSavings: 'wiseSavings'
+} as const
+
+export type GroupSettlementScalarFieldEnum = (typeof GroupSettlementScalarFieldEnum)[keyof typeof GroupSettlementScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -50,11 +50,6 @@ path.join(process.cwd(), "generated/prisma/libquery_engine-darwin-arm64.dylib.no
  */
 export type User = Prisma.UserModel
 /**
- * Model KYCProfile
- * 
- */
-export type KYCProfile = Prisma.KYCProfileModel
-/**
  * Model Account
  * 
  */
@@ -110,27 +105,27 @@ export type ExchangeRate = Prisma.ExchangeRateModel
  */
 export type MonthlyInsight = Prisma.MonthlyInsightModel
 /**
- * Model Portfolio
+ * Model ExpenseGroup
  * 
  */
-export type Portfolio = Prisma.PortfolioModel
+export type ExpenseGroup = Prisma.ExpenseGroupModel
 /**
- * Model Property
+ * Model GroupMember
  * 
  */
-export type Property = Prisma.PropertyModel
+export type GroupMember = Prisma.GroupMemberModel
 /**
- * Model Investment
+ * Model GroupExpense
  * 
  */
-export type Investment = Prisma.InvestmentModel
+export type GroupExpense = Prisma.GroupExpenseModel
 /**
- * Model Distribution
+ * Model ExpenseSplit
  * 
  */
-export type Distribution = Prisma.DistributionModel
+export type ExpenseSplit = Prisma.ExpenseSplitModel
 /**
- * Model Valuation
+ * Model GroupSettlement
  * 
  */
-export type Valuation = Prisma.ValuationModel
+export type GroupSettlement = Prisma.GroupSettlementModel

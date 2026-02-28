@@ -9,17 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const KYCStatus = {
-  NOT_STARTED: 'NOT_STARTED',
-  IN_PROGRESS: 'IN_PROGRESS',
-  PENDING_REVIEW: 'PENDING_REVIEW',
-  VERIFIED: 'VERIFIED',
-  REJECTED: 'REJECTED'
-} as const
-
-export type KYCStatus = (typeof KYCStatus)[keyof typeof KYCStatus]
-
-
 export const SyncStatus = {
   PENDING: 'PENDING',
   SYNCING: 'SYNCING',
@@ -49,50 +38,20 @@ export const MatchType = {
 export type MatchType = (typeof MatchType)[keyof typeof MatchType]
 
 
-export const PropertyType = {
-  MULTIFAMILY: 'MULTIFAMILY',
-  COMMERCIAL: 'COMMERCIAL',
-  MIXED_USE: 'MIXED_USE',
-  INDUSTRIAL: 'INDUSTRIAL',
-  FUND: 'FUND'
+export const SplitType = {
+  EQUAL: 'EQUAL',
+  EXACT: 'EXACT',
+  PERCENTAGE: 'PERCENTAGE',
+  SHARES: 'SHARES'
 } as const
 
-export type PropertyType = (typeof PropertyType)[keyof typeof PropertyType]
+export type SplitType = (typeof SplitType)[keyof typeof SplitType]
 
 
-export const PropertyStatus = {
-  RAISING: 'RAISING',
-  ACTIVE: 'ACTIVE',
-  DISTRIBUTING: 'DISTRIBUTING',
-  SOLD: 'SOLD'
-} as const
-
-export type PropertyStatus = (typeof PropertyStatus)[keyof typeof PropertyStatus]
-
-
-export const InvestmentStatus = {
+export const SettlementStatus = {
   PENDING: 'PENDING',
-  ACTIVE: 'ACTIVE',
-  EXITED: 'EXITED'
+  CONFIRMED: 'CONFIRMED',
+  COMPLETED: 'COMPLETED'
 } as const
 
-export type InvestmentStatus = (typeof InvestmentStatus)[keyof typeof InvestmentStatus]
-
-
-export const DistributionType = {
-  DIVIDEND: 'DIVIDEND',
-  PREFERRED_RETURN: 'PREFERRED_RETURN',
-  CAPITAL_RETURN: 'CAPITAL_RETURN',
-  SPECIAL: 'SPECIAL'
-} as const
-
-export type DistributionType = (typeof DistributionType)[keyof typeof DistributionType]
-
-
-export const DistributionStatus = {
-  PENDING: 'PENDING',
-  PROCESSING: 'PROCESSING',
-  PAID: 'PAID'
-} as const
-
-export type DistributionStatus = (typeof DistributionStatus)[keyof typeof DistributionStatus]
+export type SettlementStatus = (typeof SettlementStatus)[keyof typeof SettlementStatus]

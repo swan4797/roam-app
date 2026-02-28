@@ -23,66 +23,15 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // KYC Status
-  kycStatus      KYCStatus @default(NOT_STARTED)
-  kycSubmittedAt DateTime?
-  kycVerifiedAt  DateTime?
-
   // Relations
-  accounts        Account[] // NextAuth accounts (OAuth providers - for future use)
-  sessions        Session[]
-  bankConnections BankConnection[]
-  invoices        Invoice[]
-  portfolios      Portfolio[]
-  kycProfile      KYCProfile?
+  accounts         Account[] // NextAuth accounts (OAuth providers - for future use)
+  sessions         Session[]
+  bankConnections  BankConnection[]
+  invoices         Invoice[]
+  createdGroups    ExpenseGroup[] // Groups this user created
+  groupMemberships GroupMember[] // Group memberships
 
   @@map("users")
-}
-
-enum KYCStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  PENDING_REVIEW
-  VERIFIED
-  REJECTED
-}
-
-model KYCProfile {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-
-  // Personal Info
-  firstName         String
-  lastName          String
-  dateOfBirth       DateTime
-  phone             String
-
-  // Address
-  addressLine1      String
-  addressLine2      String?
-  city              String
-  state             String
-  postalCode        String
-  country           String
-
-  // Investor Accreditation
-  isAccredited      Boolean  @default(false)
-  accreditationType String?  // "INCOME", "NET_WORTH", "PROFESSIONAL"
-  annualIncome      Decimal? @db.Decimal(19, 2)
-  netWorth          Decimal? @db.Decimal(19, 2)
-
-  // Documents (URLs to uploaded files)
-  idDocumentUrl     String?
-  addressProofUrl   String?
-  accreditationUrl  String?
-
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  // Relations
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("kyc_profiles")
 }
 
 model Account {
@@ -339,133 +288,144 @@ model MonthlyInsight {
 }
 
 // ============================================================================
-// Investment Portfolio Models (Cardone Capital-style)
+// Group Expense Splitting (Splitwise-style with FX awareness)
 // ============================================================================
 
-model Portfolio {
+model ExpenseGroup {
   id          String   @id @default(cuid())
-  userId      String
-  name        String // "My Real Estate Portfolio", "Retirement Fund"
+  name        String // "Trip to Japan", "Flatmates", etc.
   description String?
+  currency    String   @default("GBP") // Default currency for the group
+  imageUrl    String?
+  createdById String // User who created the group
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  investments Investment[]
+  createdBy   User           @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  members     GroupMember[]
+  expenses    GroupExpense[]
 
-  @@index([userId])
-  @@map("portfolios")
+  @@index([createdById])
+  @@map("expense_groups")
 }
 
-model Property {
-  id              String         @id @default(cuid())
-  name            String // "10X Growth Fund", "Cardone Equity Fund IX"
-  propertyType    PropertyType
-  location        String // "Miami, FL" or "Multi-State"
-  description     String?        @db.Text
-  imageUrl        String?
-  targetReturn    Decimal?       @db.Decimal(5, 2) // Target annual return (e.g., 15.00%)
-  totalRaised     Decimal?       @db.Decimal(19, 2) // Total capital raised
-  totalUnits      Int? // Number of units/doors for real estate
-  acquisitionDate DateTime?
-  status          PropertyStatus @default(ACTIVE)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+model GroupMember {
+  id        String   @id @default(cuid())
+  groupId   String
+  userId    String? // Null if member is not a registered user
+  name      String // Display name (from User or manually entered)
+  email     String? // Email for non-registered members
+  createdAt DateTime @default(now())
 
   // Relations
-  investments Investment[]
+  group             ExpenseGroup      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user              User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  paidExpenses      GroupExpense[]    @relation("PaidBy")
+  splits            ExpenseSplit[]
+  settlementsFrom   GroupSettlement[] @relation("SettlementFrom")
+  settlementsTo     GroupSettlement[] @relation("SettlementTo")
 
-  @@map("properties")
+  @@unique([groupId, email])
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@map("group_members")
 }
 
-enum PropertyType {
-  MULTIFAMILY // Apartment complexes
-  COMMERCIAL  // Office/retail
-  MIXED_USE   // Combined residential/commercial
-  INDUSTRIAL  // Warehouses/logistics
-  FUND        // Investment fund (multiple properties)
+model GroupExpense {
+  id          String    @id @default(cuid())
+  groupId     String
+  paidById    String // GroupMember who paid
+  description String
+  amount      Decimal   @db.Decimal(19, 4)
+  currency    String // Currency of the expense
+  category    String? // "Food", "Transport", "Accommodation", etc.
+  expenseDate DateTime  @default(now())
+  splitType   SplitType @default(EQUAL) // How to split the expense
+  notes       String?
+  receiptUrl  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // FX fields (populated when expense currency differs from group currency)
+  amountInGroupCurrency Decimal? @db.Decimal(19, 4)
+  midMarketRate         Decimal? @db.Decimal(19, 8)
+  actualRate            Decimal? @db.Decimal(19, 8)
+  estimatedFxFee        Decimal? @db.Decimal(19, 4)
+
+  // Relations
+  group  ExpenseGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  paidBy GroupMember    @relation("PaidBy", fields: [paidById], references: [id])
+  splits ExpenseSplit[]
+
+  @@index([groupId])
+  @@index([paidById])
+  @@index([expenseDate])
+  @@map("group_expenses")
 }
 
-enum PropertyStatus {
-  RAISING      // Currently raising capital
-  ACTIVE       // Deployed and operating
-  DISTRIBUTING // Mature, distributing profits
-  SOLD         // Exited/sold
+enum SplitType {
+  EQUAL        // Split equally among all members
+  EXACT        // Specific amounts per person
+  PERCENTAGE   // Percentage-based split
+  SHARES       // Share-based (e.g., 2 shares vs 1 share)
 }
 
-model Investment {
+model ExpenseSplit {
+  id         String  @id @default(cuid())
+  expenseId  String
+  memberId   String
+  amount     Decimal @db.Decimal(19, 4) // Amount this member owes
+  percentage Decimal? @db.Decimal(5, 2) // Percentage if using percentage split
+  shares     Int? // Number of shares if using shares split
+  isPaid     Boolean @default(false) // Marked when settled
+
+  // FX awareness for the split
+  amountInMemberCurrency Decimal? @db.Decimal(19, 4) // If member uses different currency
+  memberCurrency         String? // Member's preferred currency
+  fxFeeOnSplit           Decimal? @db.Decimal(19, 4) // FX fee if settling in different currency
+
+  // Relations
+  expense GroupExpense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  member  GroupMember  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([expenseId, memberId])
+  @@index([memberId])
+  @@map("expense_splits")
+}
+
+model GroupSettlement {
   id             String           @id @default(cuid())
-  portfolioId    String
-  propertyId     String
-  investedAmount Decimal          @db.Decimal(19, 2) // Principal invested
-  currentValue   Decimal          @db.Decimal(19, 2) // Current estimated value
-  shareCount     Decimal?         @db.Decimal(19, 6) // Number of shares/units owned
-  investmentDate DateTime
-  status         InvestmentStatus @default(ACTIVE)
+  groupId        String
+  fromMemberId   String // Who is paying
+  toMemberId     String // Who is receiving
+  amount         Decimal          @db.Decimal(19, 4)
+  currency       String // Currency of the settlement
+  settlementDate DateTime         @default(now())
+  status         SettlementStatus @default(PENDING)
+  notes          String?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
-  // Relations
-  portfolio     Portfolio      @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  property      Property       @relation(fields: [propertyId], references: [id])
-  distributions Distribution[]
-  valuations    Valuation[]
-
-  @@index([portfolioId])
-  @@index([propertyId])
-  @@map("investments")
-}
-
-enum InvestmentStatus {
-  PENDING // Investment submitted, not yet confirmed
-  ACTIVE  // Currently invested
-  EXITED  // Position closed/sold
-}
-
-model Distribution {
-  id               String             @id @default(cuid())
-  investmentId     String
-  amount           Decimal            @db.Decimal(19, 2)
-  distributionType DistributionType
-  distributionDate DateTime
-  status           DistributionStatus @default(PENDING)
-  description      String?
-  createdAt        DateTime           @default(now())
+  // FX fields (when settling in different currency than group default)
+  amountInGroupCurrency Decimal? @db.Decimal(19, 4)
+  midMarketRate         Decimal? @db.Decimal(19, 8)
+  actualRate            Decimal? @db.Decimal(19, 8)
+  estimatedFxFee        Decimal? @db.Decimal(19, 4)
+  wiseSavings           Decimal? @db.Decimal(19, 4) // What they'd save using Wise
 
   // Relations
-  investment Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+  fromMember GroupMember @relation("SettlementFrom", fields: [fromMemberId], references: [id])
+  toMember   GroupMember @relation("SettlementTo", fields: [toMemberId], references: [id])
 
-  @@index([investmentId])
-  @@index([distributionDate])
-  @@map("distributions")
+  @@index([groupId])
+  @@index([fromMemberId])
+  @@index([toMemberId])
+  @@map("group_settlements")
 }
 
-enum DistributionType {
-  DIVIDEND         // Regular cash distribution
-  PREFERRED_RETURN // Preferred return payment
-  CAPITAL_RETURN   // Return of principal
-  SPECIAL          // Special/one-time distribution
-}
-
-enum DistributionStatus {
-  PENDING    // Scheduled but not paid
-  PROCESSING // Being processed
-  PAID       // Successfully paid out
-}
-
-model Valuation {
-  id            String   @id @default(cuid())
-  investmentId  String
-  value         Decimal  @db.Decimal(19, 2)
-  valuationDate DateTime
-  source        String   @default("quarterly_report") // "quarterly_report", "manual", "exit"
-  notes         String?
-  createdAt     DateTime @default(now())
-
-  // Relations
-  investment Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
-
-  @@index([investmentId, valuationDate])
-  @@map("valuations")
+enum SettlementStatus {
+  PENDING   // Settlement requested
+  CONFIRMED // Both parties confirmed
+  COMPLETED // Payment made
 }
